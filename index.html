@@ -5,7 +5,7 @@
 
 button {
 	height: 120px;
-    font-size: 100%;
+    font-size: 40px;
     background-color: #6d8893;
     color: white;
     border: 0px;
@@ -13,9 +13,10 @@ button {
 
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto;
-  grid-template-rows: 100px auto auto auto;
-  gap: 5px;
+  /* grid-template-columns: auto auto auto auto auto auto; */
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: auto auto auto auto auto;
+  gap: 3px;
   background-color: #123963;
   padding: 10px;
   color: white;
@@ -24,20 +25,31 @@ button {
 .grid-container > div {
   background-color: #44bbd0;
   text-align: center;
-  padding: 0px 0;
-  font-size: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 6px;
  }
 
-.item1 {
+.headingLeft {
+    grid-column: 1 / span 3;
+    font-size: 30px;
+}
+
+.headingRight {
+    grid-column: 4 / span 3;
+    font-size: 30px;
+}
+
+.statLeft {
 	grid-column: 1 / span 3;
+    font-size: 50px;
 
 }
 
-.item2 {
+.statRight {
 	grid-column: 4 / span 3;
+    font-size: 50px
 }
 
 .item3 {
@@ -48,34 +60,25 @@ button {
 	grid-column: 4 / span 3
 }
 
-.item5 {
-	grid-column: 1 / span 5
-}
-
-
 </style>
 </head>
 <body>
 
-  <h1>The grid-column Property</h1>
-
-  <p>Use the <em>grid-column</em> property to specify where to place an item.</p>
-  <p>Item1 will start on column-line 1 and span 3 columns:</p>
+  <h1>Faceoff Tracker</h1>
 
   <div class="grid-container">
-    <div class="item1">Total Won</div>
-    <div class="item2">Total Lost</div>
+    <div class="headingLeft">Total Won</div>
+    <div class="headingRight">Total Lost</div>
+    <div class="statLeft" id="totalWon-el">0</div>
+    <div class="statRight" id="totalLost-el">0</div>
     <div class="item3"><button id="winButton-el">FO Won</button></div>  
-    <div class="item4"><button>FO Lost</button></div>
-    <div class="item5">GB</div>
-    <div class="item6">6</div>
-    <div class="item7">7</div>
-    <div class="item8">8</div>  
-    <div class="item9">9</div>
-    <div class="item10">10</div>
-    <div class="item11">11</div>
-    <div class="item12">12</div>
+    <div class="item4"><button id="loseButton-el">FO Lost</button></div>
+    <div class="headingLeft">Total FOs</div>
+    <div class="headingRight">Win %</div>
+    <div class="statLeft" id="totalFaceoffs-el">0</div>
+    <div class="statRight" id="winPercent-el">0</div>  
 
   </div>
+  <script type="module" src="index.js"></script>
 </body>
 </html>
