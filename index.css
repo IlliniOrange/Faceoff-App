@@ -1,0 +1,77 @@
+h1, h2 {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  
+button {
+    height: 120px;
+    font-size: 40px;
+    background-color: #6d8893;
+    color: white;
+    border: 0px;
+}
+
+  .inputButton {
+    width: 90px;
+    height: auto;
+  }
+  
+.grid-container {
+    display: grid;
+    /* grid-template-columns: auto auto auto auto auto auto; */
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: auto auto auto auto auto auto auto;
+    gap: 3px;
+    background-color: #123963;
+    padding: 10px;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+  
+  .grid-container > div {
+    background-color: #44bbd0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px;
+   }
+  
+  .headingLeft {
+      grid-column: 1 / span 3;
+      font-size: 30px;
+  }
+  
+  .headingRight {
+      grid-column: 4 / span 3;
+      font-size: 30px;
+  }
+  
+  .statLeft {
+      grid-column: 1 / span 3;
+      font-size: 50px;
+  }
+  
+  .statRight {
+      grid-column: 4 / span 3;
+      font-size: 50px
+  }
+  
+  .bigButtonLeft {
+      grid-column: 1 / span 3;
+  }
+  
+  .bigButtonRight { 
+      grid-column: 4 / span 3;
+  }
+  
+  .newGameButton {
+    grid-column: 1 / span 3;
+      font-size: 30px;
+  }
+  
+  .saveButton {
+    grid-column: 4 / span 3;
+    font-size: 30px;
+  }
+  

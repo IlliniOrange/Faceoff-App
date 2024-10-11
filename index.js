@@ -36,10 +36,12 @@ if (ls) {
 
 winButtonEl.addEventListener("click", function() {
     addTotalWon()
+    saveGame()
 })
 
 loseButtonEl.addEventListener("click", function() {
     addTotalLost()
+    saveGame()
 })
 
 newGameButtonEl.addEventListener("click", function() {
@@ -97,7 +99,6 @@ function drawUI() {
     totalLostEl.textContent = game.faceOffsLost
     totalFaceoffsEl.textContent = game.totalFaceOffs
     winPercentEl.textContent = formatPercentage(game.winPercent)
-    saveGame()
 }
 
 /* This section contains functions used to write the data to Domo through OAuth API
