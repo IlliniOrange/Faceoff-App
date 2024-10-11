@@ -5,16 +5,31 @@
 <body>
     
 <style>
+h1 {
+    font-size: 40px
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
 
 input {
-    width: 400px;
+    width: 700px;
+    height: 80px;
     padding-left: 6px;
     padding-top: 4px;
     padding-bottom: 4px;
     margin-bottom: 6px;
     border-color: green;
     border-style: solid;
-    font-size: 20px;
+    font-size: 4em;
+    font-style: italic
+}
+
+.content {
+    max-width: 700px;
+    margin: auto;
+
 }
 
 button {
@@ -23,18 +38,22 @@ button {
     background-color: #6d8893;
     color: white;
     border: 0px;
+    width:700px;
+    font-size: 4em
 }
 </style>
 
+<div class="content">
 
 <h1>Create a new game</h1>
 
 <p></p>
 <input type = "text" id="opponentInput-el" value = "Enter Opponent">
+<p></p>
 <input type = "text" id="location-el" value = "Enter Location">
 <p></p>
 <button id="startButton-el">Start Game</button>
-
+</div>
 <script type="module" src="newgame.js"></script>
 </body>
 </html>

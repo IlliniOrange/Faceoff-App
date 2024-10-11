@@ -9,6 +9,10 @@ const totalFaceoffsEl = document.getElementById("totalFaceoffs-el")
 const winPercentEl = document.getElementById("winPercent-el")
 const opponentEl = document.getElementById("opponent-el")
 const saveButtonEl = document.getElementById("saveButton-el")
+const totalGBsEl = document.getElementById("totalGBs-el")
+const gbsLostEl = document.getElementById("gbsLost-el")
+const gbWonButtonEl = document.getElementById("gbWonButton-el")
+const gbLoseButtonEl = document.getElementById("gbLoseButton-el")
 
 
 // Create game object
@@ -20,6 +24,8 @@ let game = {
     faceOffsLost: 0,
     totalFaceOffs: 0,
     winPercent: 0,
+    gbsWon : 0,
+    gbsLost: 0,
 }
 
 // If a game exists in local storage, load it to the game object. Otherwise set the state for a new game entry.
@@ -41,6 +47,16 @@ winButtonEl.addEventListener("click", function() {
 
 loseButtonEl.addEventListener("click", function() {
     addTotalLost()
+    saveGame()
+})
+
+gbWonButtonEl.addEventListener("click", function() {
+    addGBWon()
+    saveGame()
+})
+
+gbLoseButtonEl.addEventListener("click", function() {
+    addGBLost()
     saveGame()
 })
 
@@ -87,6 +103,16 @@ function calcWinPercent() {
     drawUI()
 }
 
+function addGBWon() {
+    game.gbsWon += 1
+    drawUI()
+}
+
+function addGBLost() {
+    game.gbsLost += 1
+    drawUI()
+}
+
 // Format the win percentage
 function formatPercentage(num) {
     return (num * 100).toFixed(2) + '%';
@@ -99,6 +125,8 @@ function drawUI() {
     totalLostEl.textContent = game.faceOffsLost
     totalFaceoffsEl.textContent = game.totalFaceOffs
     winPercentEl.textContent = formatPercentage(game.winPercent)
+    totalGBsEl.textContent = game.gbsWon
+    gbsLostEl.textContent = game.gbsLost
 }
 
 /* This section contains functions used to write the data to Domo through OAuth API
@@ -133,7 +161,7 @@ function drawUI() {
  async function writeDataToDomo (game) {
     const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
     const authorizationValue = 'Bearer ' + await getAccessToken()
-    const gameString = game.date + "," + game.opponent + "," + game.faceOffsWon + "," + game.faceOffsLost + "," + game.totalFaceOffs + "," + game.winPercent
+    const gameString = game.date + "," + game.opponent + "," + game.faceOffsWon + "," + game.faceOffsLost + "," + game.totalFaceOffs + "," + game.winPercent + "," + game.gbsWon + "," + game.gbsLost
     const options = {
         method: 'PUT',
         headers: {

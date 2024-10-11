@@ -1,12 +1,13 @@
 h1, h2 {
     font-family: Arial, Helvetica, sans-serif;
   }
-
-  
+h2 {
+  font-size: 50px
+}
   
 button {
-    height: 120px;
-    font-size: 40px;
+    height: 100%;
+    font-size: 125px;
     background-color: #6d8893;
     color: white;
     border: 0px;
@@ -19,12 +20,12 @@ button {
   
 .grid-container {
     display: grid;
-    /* grid-template-columns: auto auto auto auto auto auto; */
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    // grid-template-columns: auto auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto auto auto auto auto auto auto;
-    gap: 3px;
+    gap: 5px;
     background-color: #123963;
-    padding: 10px;
+    padding: 2ch;
     color: white;
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -35,44 +36,46 @@ button {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 6px;
+    padding: 10px;
    }
   
   .headingLeft {
-      grid-column: 1 / span 3;
-      font-size: 30px;
+      grid-column: 1 / span 1;
+      font-size: 80px;
   }
   
   .headingRight {
-      grid-column: 4 / span 3;
-      font-size: 30px;
+      grid-column: 2 / span 1;
+      font-size: 80px;
   }
   
   .statLeft {
-      grid-column: 1 / span 3;
-      font-size: 50px;
+      grid-column: 1 / span 1;
+      font-size: 90px;
   }
   
   .statRight {
-      grid-column: 4 / span 3;
-      font-size: 50px
+      grid-column: 2 / span 1;
+      font-size: 90px
   }
   
   .bigButtonLeft {
-      grid-column: 1 / span 3;
+      grid-column: 1 / span 1;
   }
   
   .bigButtonRight { 
-      grid-column: 4 / span 3;
+      grid-column: 2 / span 1;
   }
   
   .newGameButton {
-    grid-column: 1 / span 3;
-      font-size: 30px;
+    grid-column: 1 / span 2;
+      font-size: 100px;
+      height: 130px;
   }
   
   .saveButton {
-    grid-column: 4 / span 3;
-    font-size: 30px;
+    grid-column: 1 / span 2;
+    font-size: 90px;
+    height: 130px
   }
   

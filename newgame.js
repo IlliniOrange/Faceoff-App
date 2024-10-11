@@ -19,6 +19,8 @@ startButton.addEventListener("click", function() {
         faceOffsLost: 0,
         totalFaceOffs: 0,
         winPercent: 0,
+        gbsWon: 0,
+        gbsLost: 0,
     }
     game.opponent = opponentInputEl.value
     localStorage.setItem("game", JSON.stringify(game))
