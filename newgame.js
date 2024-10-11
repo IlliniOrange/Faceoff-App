@@ -26,18 +26,6 @@ startButton.addEventListener("click", function() {
     localStorage.setItem("game", JSON.stringify(game))
     window.location.href = "index.html"
 })
-/*
-function formatDateTime(date1) {
-    let d = date1.getDate()
-    let m = date1.getMonth()
-    let y = date1.getFullYear()
-    let h = date1.getHours()
-    let min = date1.getMinutes()
-    let s = date1.getSeconds()
-    return(d)
-
-}
-*/
 
 function formatDate() {
     var d = new Date(),

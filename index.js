@@ -1,21 +1,21 @@
 // Initialize variables
 
-const totalWonEl = document.getElementById("totalWon-el")
-const totalLostEl = document.getElementById("totalLost-el")
-const winButtonEl = document.getElementById("winButton-el")
-const loseButtonEl = document.getElementById("loseButton-el")
-const newGameButtonEl = document.getElementById("newGameButton-el")
-const totalFaceoffsEl = document.getElementById("totalFaceoffs-el")
-const winPercentEl = document.getElementById("winPercent-el")
-const opponentEl = document.getElementById("opponent-el")
-const saveButtonEl = document.getElementById("saveButton-el")
-const totalGBsEl = document.getElementById("totalGBs-el")
-const gbsLostEl = document.getElementById("gbsLost-el")
-const gbWonButtonEl = document.getElementById("gbWonButton-el")
-const gbLoseButtonEl = document.getElementById("gbLoseButton-el")
-const gridHeaderEl = document.getElementById("gridHeader-el")
+const totalWonEl = document.getElementById("totalWon-el"),
+    totalLostEl = document.getElementById("totalLost-el"),
+    winButtonEl = document.getElementById("winButton-el"),
+    loseButtonEl = document.getElementById("loseButton-el"),
+    newGameButtonEl = document.getElementById("newGameButton-el"),
+    totalFaceoffsEl = document.getElementById("totalFaceoffs-el"),
+    winPercentEl = document.getElementById("winPercent-el"),
+    opponentEl = document.getElementById("opponent-el"),
+    saveButtonEl = document.getElementById("saveButton-el"),
+    totalGBsEl = document.getElementById("totalGBs-el"),
+    gbsLostEl = document.getElementById("gbsLost-el"),
+    gbWonButtonEl = document.getElementById("gbWonButton-el"),
+    gbLoseButtonEl = document.getElementById("gbLoseButton-el"),
+    gridHeaderEl = document.getElementById("gridHeader-el")
 
-// Create game object
+// Initialize game object
 
 let game = {
     date: Date(),
@@ -28,7 +28,7 @@ let game = {
     gbsLost: 0,
 }
 
-// If a game exists in local storage, load it to the game object. Otherwise set the state for a new game entry.
+// If a game exists in local storage, load it to the game object. Otherwise redirect to newgame.html
 
 let ls = localStorage.getItem("game")
 if (ls) {
@@ -72,29 +72,26 @@ saveButtonEl.addEventListener("click", function() {
     }
 })
 
-// TESTING
-
-
 // Save game to local storage
 
 function saveGame() {
     localStorage.setItem("game", JSON.stringify(game))
-    saveButtonEl.classList.remove("buttonDisabled")  // saveGame is only called afer a new event, either a new game or after loading a game. This is used to enable the save button
+    saveButtonEl.classList.remove("buttonDisabled")  // saveGame is only called afer a new score event, either a new game or after loading a game. This is used to enable the save button
     saveButtonEl.disabled = false
 }
 
 // Scorekeeping functions
 
 function addTotalWon() {
-    game.faceOffsWon += 1
-    game.totalFaceOffs +=1
+    game.faceOffsWon++
+    game.totalFaceOffs++
     calcWinPercent()
     drawUI()
 }
 
 function addTotalLost() {
-    game.faceOffsLost += 1
-    game.totalFaceOffs += 1
+    game.faceOffsLost++
+    game.totalFaceOffs++
     calcWinPercent()
     drawUI()
 }
@@ -105,12 +102,12 @@ function calcWinPercent() {
 }
 
 function addGBWon() {
-    game.gbsWon += 1
+    game.gbsWon++
     drawUI()
 }
 
 function addGBLost() {
-    game.gbsLost += 1
+    game.gbsLost++
     drawUI()
 }
 
