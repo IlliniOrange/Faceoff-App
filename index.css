@@ -1,8 +1,14 @@
-h1, h2 {
-    font-family: Arial, Helvetica, sans-serif;
-  }
+
+body {
+  font-family: Helvetica, Arial, san-serif;
+  background-color: rgb(63, 71, 71);
+  color:bisque
+}
+
 h2 {
-  font-size: 50px
+  font-size: 50px;
+  color: white;
+  margin-left: 3%
 }
   
 button {
@@ -10,7 +16,9 @@ button {
     font-size: 80px;
     background-color: #6d8893;
     color: white;
-    border: 0px;
+    border: 3px solid rgb(226, 213, 213);
+    border-radius: 20px;
+    background-image: linear-gradient(#6d8893, #3d6c7e);
 }
 
   .inputButton {
@@ -20,14 +28,12 @@ button {
   
 .grid-container {
     display: grid;
-    // grid-template-columns: auto auto;
+    /* grid-template-columns: auto auto; */
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto auto auto auto auto auto auto;
     gap: 5px;
     background-color: #123963;
     padding: 2ch;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
 }
   
   .grid-container > div {
@@ -37,8 +43,14 @@ button {
     flex-direction: column;
     justify-content: center;
     padding: 10px;
+    color: #123963;
    }
   
+  .gridHeader {
+    grid-column: 1 / span 2;
+    font-size: 60px;
+  }
+
   .headingLeft {
       grid-column: 1 / span 1;
       font-size: 80px;
@@ -61,21 +73,26 @@ button {
   
   .bigButtonLeft {
       grid-column: 1 / span 1;
+      touch-action: manipulation;
   }
   
   .bigButtonRight { 
       grid-column: 2 / span 1;
+      touch-action: manipulation;
   }
-  
-  .newGameButton {
+
+  .wideButton {
     grid-column: 1 / span 2;
-      font-size: 100px;
       height: 130px;
   }
   
-  .saveButton {
-    grid-column: 1 / span 2;
-    font-size: 100px;
-    height: 130px
-  }
+input {
+  height: 100px;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  font-size:80px;
+  border-width: 4px;
+  font-style: italic
+}
   

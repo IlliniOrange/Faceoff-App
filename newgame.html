@@ -1,59 +1,27 @@
+<!DOCTYPE html>
 <html>
-
-<head>
+    <head>
+        <link rel="stylesheet" href="index.css">
     </head>
 <body>
     
 <style>
 h1 {
-    font-size: 40px
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-input {
-    width: 700px;
-    height: 80px;
-    padding-left: 6px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    margin-bottom: 6px;
-    border-color: green;
-    border-style: solid;
-    font-size: 4em;
-    font-style: italic
-}
-
-.content {
-    max-width: 700px;
-    margin: auto;
-
-}
-
-button {
-	height: 120px;
-    font-size: 40px;
-    background-color: #6d8893;
+    font-size: 70px;
+    text-align: center;
     color: white;
-    border: 0px;
-    width:700px;
-    font-size: 4em
 }
+
 </style>
 
-<div class="content">
+    <div class="grid-container">
+        <div class="gridHeader">Create New Game</div>
+        <div class="gridHeader"><input type = "text" id="opponentInput-el" value="Enter Opponent"></div>
+        <div class="gridHeader"><input type = "text" id="location-el" value="Enter Location"></div>
+        <div class="wideButton"><button id="startButton-el">Start Game</button></div>
 
-<h1>Create a new game</h1>
+    </div>
 
-<p></p>
-<input type = "text" id="opponentInput-el" value = "Enter Opponent">
-<p></p>
-<input type = "text" id="location-el" value = "Enter Location">
-<p></p>
-<button id="startButton-el">Start Game</button>
-</div>
 <script type="module" src="newgame.js"></script>
 </body>
 </html>

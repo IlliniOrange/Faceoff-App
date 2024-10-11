@@ -13,7 +13,7 @@ const totalGBsEl = document.getElementById("totalGBs-el")
 const gbsLostEl = document.getElementById("gbsLost-el")
 const gbWonButtonEl = document.getElementById("gbWonButton-el")
 const gbLoseButtonEl = document.getElementById("gbLoseButton-el")
-
+const gridHeaderEl = document.getElementById("gridHeader-el")
 
 // Create game object
 
@@ -120,7 +120,7 @@ function formatPercentage(num) {
 
 // Draw the UI
 function drawUI() {
-    opponentEl.textContent = "Opponent: " + game.opponent
+    gridHeaderEl.textContent = "Vs: " + game.opponent
     totalWonEl.textContent = game.faceOffsWon
     totalLostEl.textContent = game.faceOffsLost
     totalFaceoffsEl.textContent = game.totalFaceOffs
@@ -173,16 +173,13 @@ function drawUI() {
     };
 
     try {
-        const response = await fetch(url, options);
-        const data = await response.json();
-        console.log(response)
+        const response = await fetch(url, options)
+        const data = await response.json()
     } catch (error) {
-        // console.error(error);
+        // console.error(error)
     }
 
     }
 
 // Start
-drawUI() // Draws UI from loaded game, otherwise saves a blank game object in local storage
-
-// console.log(await getAccessToken())
+drawUI()
