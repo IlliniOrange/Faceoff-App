@@ -90,14 +90,22 @@ button {
     opacity: 0.4;
   }
 
-input {
-  height: 100px;
-  padding-left: 20px;
-  padding-top: 10px;
-  padding-bottom: 20px;
-  font-size:80px;
-  border-width: 4px;
-  font-style: italic;
-  background-color:beige
+  button:active {
+    background: #350b0b;
+    -webkit-box-shadow: inset 0px 0px 5px #381616;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
+  }
+
+  input {
+    height: 100px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    font-size:80px;
+    border-width: 4px;
+    font-style: italic;
+    background-color:beige
 }
 

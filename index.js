@@ -73,8 +73,7 @@ saveButtonEl.addEventListener("click", function() {
 })
 
 // TESTING
-
-
+  
 // Save game to local storage
 
 function saveGame() {
