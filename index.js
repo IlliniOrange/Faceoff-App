@@ -10,11 +10,12 @@ const winPercentEl = document.getElementById("winPercent-el")
 const opponentEl = document.getElementById("opponent-el")
 const saveButtonEl = document.getElementById("saveButton-el")
 
+
 // Create game object
 
 let game = {
     date: Date(),
-    opponent: "Judge",
+    opponent: "",
     faceOffsWon: 0,
     faceOffsLost: 0,
     totalFaceOffs: 0,
@@ -27,7 +28,8 @@ let ls = localStorage.getItem("game")
 if (ls) {
     game = JSON.parse(ls)
 } else {
-    opponentEl.innerHTML = "<input type='text' id='opponentInput' value='Input opponent name'><button id='inputButton-el' class='inputButton' onclick=getOpponent()>Button</button>"
+    // opponentEl.innerHTML = "<input type='text' id='opponentInput' value='Input opponent name'><button id='inputButton-el' class='inputButton' onclick=getOpponent()>Button</button>"
+    window.location.href = "newgame.html"
 }
 
 // Event Listeners
@@ -43,7 +45,7 @@ loseButtonEl.addEventListener("click", function() {
 newGameButtonEl.addEventListener("click", function() {
     if (confirm("Are you sure? This will delete the current game")) {
         localStorage.removeItem("game")
-        location.reload()
+        window.location.href = "newgame.html"
     }
 })
 
@@ -90,6 +92,7 @@ function formatPercentage(num) {
 
 // Draw the UI
 function drawUI() {
+    opponentEl.textContent = "Opponent: " + game.opponent
     totalWonEl.textContent = game.faceOffsWon
     totalLostEl.textContent = game.faceOffsLost
     totalFaceoffsEl.textContent = game.totalFaceOffs
