@@ -20,7 +20,7 @@ button {
   display: grid;
   /* grid-template-columns: auto auto auto auto auto auto; */
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-template-rows: auto auto auto auto auto;
+  grid-template-rows: auto auto auto auto auto auto auto;
   gap: 3px;
   background-color: #123963;
   padding: 10px;
@@ -49,7 +49,6 @@ button {
 .statLeft {
 	grid-column: 1 / span 3;
     font-size: 50px;
-
 }
 
 .statRight {
@@ -58,16 +57,21 @@ button {
 }
 
 .bigButtonLeft {
-	grid-column: 1 / span 3
+	grid-column: 1 / span 3;
 }
 
 .bigButtonRight { 
-	grid-column: 4 / span 3
+	grid-column: 4 / span 3;
 }
 
-.clearButton {
+.newGameButton {
   grid-column: 1 / span 3;
-    font-size: 20px;
+    font-size: 30px;
+}
+
+.saveButton {
+  grid-column: 4 / span 3;
+  font-size: 30px;
 }
 
 </style>
@@ -88,7 +92,8 @@ button {
     <div class="headingRight">Win %</div>
     <div class="statLeft" id="totalFaceoffs-el">0</div>
     <div class="statRight" id="winPercent-el">0</div>
-    <div class="clearButton"><button id="clearButton-el" class="clearButton">Start New Game</button></div>
+    <div class="newGameButton"><button id="newGameButton-el" class="newGameButton">Start New Game</button></div>
+    <div class="saveButton"><button id="saveButton-el" class="newGameButton">Save Game to Domo</button></div>
     </b></div>
 
   </div>
