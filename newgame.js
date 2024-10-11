@@ -13,7 +13,7 @@ locationEl.addEventListener("keyup", function() {
 startButton.addEventListener("click", function() {
     console.log("Button Clicked")
     let game = {
-        date: Date(),
+        date: formatDate(),
         opponent: "",
         faceOffsWon: 0,
         faceOffsLost: 0,
@@ -26,6 +26,35 @@ startButton.addEventListener("click", function() {
     localStorage.setItem("game", JSON.stringify(game))
     window.location.href = "index.html"
 })
+/*
+function formatDateTime(date1) {
+    let d = date1.getDate()
+    let m = date1.getMonth()
+    let y = date1.getFullYear()
+    let h = date1.getHours()
+    let min = date1.getMinutes()
+    let s = date1.getSeconds()
+    return(d)
+
+}
+*/
+
+function formatDate() {
+    var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getUTCDate(),
+        year = d.getUTCFullYear(),
+        hour = d.getUTCHours(),
+        min = d.getUTCMinutes(),
+        sec = d.getUTCSeconds()
+    
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [month, day, year].join('/') + " " + [hour, min, sec].join(':')
+}
 
 function checkInput() {
     if (opponentInputEl.value !== '' && locationEl.value !== '') {
