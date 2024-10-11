@@ -34,7 +34,6 @@ let ls = localStorage.getItem("game")
 if (ls) {
     game = JSON.parse(ls)
 } else {
-    // opponentEl.innerHTML = "<input type='text' id='opponentInput' value='Input opponent name'><button id='inputButton-el' class='inputButton' onclick=getOpponent()>Button</button>"
     window.location.href = "newgame.html"
 }
 
@@ -80,6 +79,8 @@ saveButtonEl.addEventListener("click", function() {
 
 function saveGame() {
     localStorage.setItem("game", JSON.stringify(game))
+    saveButtonEl.classList.remove("buttonDisabled")  // saveGame is only called afer a new event, either a new game or after loading a game. This is used to enable the save button
+    saveButtonEl.disabled = false
 }
 
 // Scorekeeping functions
@@ -129,7 +130,7 @@ function drawUI() {
     gbsLostEl.textContent = game.gbsLost
 }
 
-/* This section contains functions used to write the data to Domo through OAuth API
+/* This section contains the functions used to write the data to Domo through OAuth API
     - For now, not expecting to save data in less than 1 hour intervals, the code will refresh
     the token on each call */
     

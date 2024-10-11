@@ -2,12 +2,12 @@ const startButton = document.getElementById("startButton-el")
 const opponentInputEl = document.getElementById("opponentInput-el")
 const locationEl = document.getElementById("location-el")
 
-opponentInputEl.addEventListener("click", function() {
-    opponentInputEl.value = ""
+opponentInputEl.addEventListener("keyup", function() {
+    checkInput()
 })
 
-locationEl.addEventListener("click", function() {
-    locationEl.value = ""
+locationEl.addEventListener("keyup", function() {
+    checkInput()
 })
 
 startButton.addEventListener("click", function() {
@@ -27,4 +27,12 @@ startButton.addEventListener("click", function() {
     window.location.href = "index.html"
 })
 
-
+function checkInput() {
+    if (opponentInputEl.value !== '' && locationEl.value !== '') {
+        startButton.classList.remove("buttonDisabled")
+        startButton.disabled = false
+    } else {
+        startButton.classList.add("buttonDisabled")
+        startButton.disabled = true
+    }
+}

@@ -86,6 +86,10 @@ button {
       height: 130px;
   }
   
+  .buttonDisabled {
+    opacity: 0.4;
+  }
+
 input {
   height: 100px;
   padding-left: 20px;
@@ -93,6 +97,7 @@ input {
   padding-bottom: 20px;
   font-size:80px;
   border-width: 4px;
-  font-style: italic
+  font-style: italic;
+  background-color:beige
 }
-  
+
