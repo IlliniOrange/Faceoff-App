@@ -15,10 +15,9 @@ const totalWonEl = document.getElementById("totalWon-el"),
     gbLoseButtonEl = document.getElementById("gbLoseButton-el"),
     gridHeaderEl = document.getElementById("gridHeader-el")
 
-// Initialize game object
-
 let game = {
     date: Date(),
+    location: "",
     opponent: "",
     faceOffsWon: 0,
     faceOffsLost: 0,
@@ -28,34 +27,43 @@ let game = {
     gbsLost: 0,
 }
 
-// If a game exists in local storage, load it to the game object. Otherwise redirect to newgame.html
+/**********  Load game from Local Storage, otherwise redirect to new game page  **********/
 
 let ls = localStorage.getItem("game")
 if (ls) {
     game = JSON.parse(ls)
-} else {
-    window.location.href = "newgame.html"
+    saveButtonEl.classList.remove("buttonDisabled")
+    } else {
+        window.location.href = "newgame.html"
 }
 
-// Event Listeners
+/**********  Render page variables  *********/
+
+drawUI()
+
+/**********  Event Listeners  **********/
 
 winButtonEl.addEventListener("click", function() {
-    addTotalWon()
+    game.faceOffsWon = incrementStat(game.faceOffsWon, totalWonEl)
+    game.totalFaceOffs = incrementStat(game.totalFaceOffs, totalFaceoffsEl)
+    calcWinPercent(game.faceOffsWon, game.totalFaceOffs)
     saveGame()
 })
 
 loseButtonEl.addEventListener("click", function() {
-    addTotalLost()
+    game.faceOffsLost = incrementStat(game.faceOffsLost, totalLostEl)
+    game.totalFaceOffs = incrementStat(game.totalFaceOffs, totalFaceoffsEl)
+    calcWinPercent(game.faceOffsWon, game.totalFaceOffs)
     saveGame()
 })
 
 gbWonButtonEl.addEventListener("click", function() {
-    addGBWon()
+    game.gbsWon = incrementStat(game.gbsWon, totalGBsEl)
     saveGame()
 })
 
 gbLoseButtonEl.addEventListener("click", function() {
-    addGBLost()
+    game.gbsLost = incrementStat(game.gbsLost, gbsLostEl)
     saveGame()
 })
 
@@ -72,44 +80,27 @@ saveButtonEl.addEventListener("click", function() {
     }
 })
 
-// Save game to local storage
+/**********  Increment a stat and update the HTML element  **********/
+
+function incrementStat(stat, element) {
+    stat++
+    element.textContent = stat
+    return stat
+}
+
+function calcWinPercent(win, total) {
+    game.winPercent = win/total
+    winPercentEl.textContent = formatPercentage(game.winPercent)
+}
+/**********  Save game to Local Storage  **********/
 
 function saveGame() {
     localStorage.setItem("game", JSON.stringify(game))
-    saveButtonEl.classList.remove("buttonDisabled")  // saveGame is only called afer a new score event, either a new game or after loading a game. This is used to enable the save button
+    saveButtonEl.classList.remove("buttonDisabled")  // Enable the save button after an event
     saveButtonEl.disabled = false
 }
 
 // Scorekeeping functions
-
-function addTotalWon() {
-    game.faceOffsWon++
-    game.totalFaceOffs++
-    calcWinPercent()
-    drawUI()
-}
-
-function addTotalLost() {
-    game.faceOffsLost++
-    game.totalFaceOffs++
-    calcWinPercent()
-    drawUI()
-}
-
-function calcWinPercent() {
-    game.winPercent = game.faceOffsWon / game.totalFaceOffs
-    drawUI()
-}
-
-function addGBWon() {
-    game.gbsWon++
-    drawUI()
-}
-
-function addGBLost() {
-    game.gbsLost++
-    drawUI()
-}
 
 function formatPercentage(num) {
     return (num * 100).toFixed(2) + '%';
@@ -158,15 +149,20 @@ function drawUI() {
  async function writeDataToDomo (game) {
     const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
     const authorizationValue = 'Bearer ' + await getAccessToken()
-    const gameString = game.date + "," + game.opponent + "," + game.faceOffsWon + "," + game.faceOffsLost + "," + game.totalFaceOffs + "," + game.winPercent + "," + game.gbsWon + "," + game.gbsLost
-    const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'text/csv',
-            Accept: 'application/json',
-            Authorization: authorizationValue,
-        },
-        body: gameString
+    
+    let gameArray = []
+    for (const [key, value] of Object.entries(game)) {
+        gameArray.push(value)
+    }
+    const gameString = gameArray.join(","),
+        options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'text/csv',
+                Accept: 'application/json',
+                Authorization: authorizationValue,
+            },
+            body: gameString
     };
 
     try {
@@ -176,7 +172,4 @@ function drawUI() {
         // console.error(error)
     }
 
-    }
-
-// Start
-drawUI()
+}

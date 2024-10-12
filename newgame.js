@@ -14,6 +14,7 @@ startButton.addEventListener("click", function() {
     let game = {
         date: formatDate(),
         opponent: "",
+        location: "",
         faceOffsWon: 0,
         faceOffsLost: 0,
         totalFaceOffs: 0,
@@ -22,6 +23,7 @@ startButton.addEventListener("click", function() {
         gbsLost: 0,
     }
     game.opponent = opponentInputEl.value
+    game.location = locationEl.value
     localStorage.setItem("game", JSON.stringify(game))
     window.location.href = "index.html"
 })
