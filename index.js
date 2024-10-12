@@ -111,7 +111,6 @@ function addGBLost() {
     drawUI()
 }
 
-// Format the win percentage
 function formatPercentage(num) {
     return (num * 100).toFixed(2) + '%';
   }

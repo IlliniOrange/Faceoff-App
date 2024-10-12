@@ -1,6 +1,6 @@
-const startButton = document.getElementById("startButton-el")
-const opponentInputEl = document.getElementById("opponentInput-el")
-const locationEl = document.getElementById("location-el")
+const startButton = document.getElementById("startButton-el"),
+    opponentInputEl = document.getElementById("opponentInput-el"),
+    locationEl = document.getElementById("location-el")
 
 opponentInputEl.addEventListener("keyup", function() {
     checkInput()
