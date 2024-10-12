@@ -11,7 +11,6 @@ locationEl.addEventListener("keyup", function() {
 })
 
 startButton.addEventListener("click", function() {
-    console.log("Button Clicked")
     let game = {
         date: formatDate(),
         opponent: "",
