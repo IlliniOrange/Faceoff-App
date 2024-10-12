@@ -29,7 +29,7 @@ startButton.addEventListener("click", function() {
 
 function formatDate() {
     var d = new Date(),
-        month = '' + (d.getMonth() + 1),
+        month = '' + (d.getUTCMonth() + 1),
         day = '' + d.getUTCDate(),
         year = d.getUTCFullYear(),
         hour = d.getUTCHours(),
