@@ -2,7 +2,7 @@
 body {
   font-family: Helvetica, Arial, san-serif;
   background-color: rgb(63, 71, 71);
-  color:bisque
+  color:bisque;
 }
 
 h2 {
@@ -30,7 +30,7 @@ button {
     display: grid;
     /* grid-template-columns: auto auto; */
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: auto auto auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto;
     gap: 5px;
     background-color: #123963;
     padding: 2ch;
@@ -41,7 +41,6 @@ button {
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     padding: 10px;
     color: #123963;
    }
