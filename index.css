@@ -35,7 +35,7 @@ button {
     gap: 5px;
     /* background-color: #123963; JD SKIN */
     padding: 2ch;
-    background-image: url(True_UT.png); /*TRUE SKIN*/
+    background-image: url(assets/images/True_UT.png); /*TRUE SKIN*/
     background-repeat: no-repeat; /*TRUE SKIN*/
     background-position: center; /*TRUE SKIN*/
     background-size: cover; /*TRUE SKIN*/
