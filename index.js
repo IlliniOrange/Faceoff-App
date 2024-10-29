@@ -1,3 +1,20 @@
+// Imports
+import { initializeApp } from "firebase/app";
+
+// Firebase Setup
+const firebaseConfig = {
+    apiKey: "AIzaSyDefIFL8XLLr1LKVOnZNvhHWT97RAFzBEk",
+    authDomain: "faceoff-tracker.firebaseapp.com",
+    projectId: "faceoff-tracker",
+    storageBucket: "faceoff-tracker.appspot.com",
+    messagingSenderId: "518589486909",
+    appId: "1:518589486909:web:548ed884428b3713751754"
+  };
+
+  const app = initializeApp(firebaseConfig);
+
+  console.log(app)
+
 // Initialize variables
 
 const totalWonEl = document.getElementById("totalWon-el"),
