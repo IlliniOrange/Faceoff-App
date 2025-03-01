@@ -19,7 +19,7 @@ button {
     border: 3px solid rgb(226, 213, 213);
     border-radius: 20px;
     background-image: linear-gradient(#6d8893, #3d6c7e); /*JD SKIN*/
-    background-image: linear-gradient(#584b4b, #a6eb37); /*TRUE SKIN*/
+    /* background-image: linear-gradient(#584b4b, #a6eb37); /*TRUE SKIN*/
 }
 
   .inputButton {
@@ -33,24 +33,24 @@ button {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto;
     gap: 5px;
-    /* background-color: #123963; JD SKIN */
+    background-color: #123963; /*JD SKIN */
     padding: 2ch;
-    background-image: url(assets/images/True_UT.png); /*TRUE SKIN*/
-    background-repeat: no-repeat; /*TRUE SKIN*/
-    background-position: center; /*TRUE SKIN*/
-    background-size: cover; /*TRUE SKIN*/
+    /* background-image: url(assets/images/True_UT.png); /*TRUE SKIN*/
+    /* background-repeat: no-repeat; /*TRUE SKIN*/
+    /* background-position: center; /*TRUE SKIN*/
+    /* background-size: cover; /*TRUE SKIN*/
 }
   
   .grid-container > div {
-    /* background-color: #44bbd0; JD SKIN */
-    background-color: rgb(76, 81, 66); /* TRUE SKIN */
+    background-color: #44bbd0;
+    /* background-color: rgb(76, 81, 66); /* TRUE SKIN */
     text-align: center;
     display: flex;
     flex-direction: column;
     padding: 10px;
-     /* color: #123963; JD SKIN */
-    opacity: 95%; /*TRUE SKIN*/
-    color: #a6eb37; /*TRUE SKIN */
+    color: #123963; /* JD SKIN */
+    /* opacity: 95%; /*TRUE SKIN*/
+    /* color: #a6eb37; /*TRUE SKIN */
    }
   
   .gridHeader {

@@ -1,8 +1,13 @@
 const startButton = document.getElementById("startButton-el"),
     opponentInputEl = document.getElementById("opponentInput-el"),
     locationEl = document.getElementById("location-el"),
-    domoClientIdEl = document.getElementById("domoClientId-el")
+    domoClientIdEl = document.getElementById("domoClientId-el"),
+    domoClientSecretEl = document.getElementById("domoClientSecret-el")
 
+let creds = {
+    id: "",
+    secret: "",
+}
 
 opponentInputEl.addEventListener("keyup", function() {
     checkInput()
@@ -12,7 +17,11 @@ locationEl.addEventListener("keyup", function() {
     checkInput()
 })
 
-domoTokenEl.addEventListener("keyup", function() {
+domoClientSecretEl.addEventListener("keyup", function() {
+    checkInput()
+})
+
+domoClientIdEl.addEventListener("keyup", function() {
     checkInput()
 })
 
@@ -31,7 +40,10 @@ startButton.addEventListener("click", function() {
     }
     game.opponent = opponentInputEl.value
     game.location = locationEl.value
+    creds.id = domoClientIdEl.value
+    creds.secret = domoClientSecretEl.value
     localStorage.setItem("game", JSON.stringify(game))
+    localStorage.setItem("Domo", JSON.stringify(creds))
     window.location.href = "index.html"
 })
 
@@ -53,7 +65,7 @@ function formatDate() {
 }
 
 function checkInput() {
-    if (opponentInputEl.value !== '' && locationEl.value !== '' && domoTokenEl.value !== '') {
+    if (opponentInputEl.value !== '' && locationEl.value !== '' && domoClientIdEl.value !== '' && domoClientSecretEl.value !== '') {
         startButton.classList.remove("buttonDisabled")
         startButton.disabled = false
     } else {
@@ -62,4 +74,21 @@ function checkInput() {
     }
 }
 
+function getDomoCreds() {
+    let ls = localStorage.getItem("Domo")
+    if (ls) {
+        creds = JSON.parse(ls)
+        domoClientIdEl.value = creds.id
+        domoClientSecretEl.value = creds.secret
+        domoClientIdEl.style.display = "none"
+        domoClientSecretEl.style.display = "none"
+        }
 
+}
+
+getDomoCreds()
+
+
+
+
+        

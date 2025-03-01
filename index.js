@@ -27,6 +27,7 @@ let game = {
     gbsLost: 0,
 }
 
+
 /**********  Load game from Local Storage, otherwise redirect to new game page  **********/
 
 let ls = localStorage.getItem("game")
@@ -37,7 +38,12 @@ if (ls) {
         window.location.href = "newgame.html"
 }
 
-/**********  Render page variables  *********/
+/**********  Get Creds from Storage  **********/
+
+let creds = JSON.parse(localStorage.getItem("Domo"))
+
+
+/**********  Render page *********/
 
 drawUI()
 
@@ -124,8 +130,8 @@ function drawUI() {
 // Get an access token
  async function getAccessToken() {
     const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials';
-    const clientId = '6b23c9b5-fb97-464a-8c51-2ec477cfac47'
-    const clientSecret = '1790fd9c39c979cf4d400576ccf162b7437b6139bd754c5a37037f9e6b5f46e6'
+    const clientId = creds.id
+    const clientSecret = creds.secret
     const authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret )
     
     const options = {
