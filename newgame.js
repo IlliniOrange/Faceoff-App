@@ -1,6 +1,8 @@
 const startButton = document.getElementById("startButton-el"),
     opponentInputEl = document.getElementById("opponentInput-el"),
-    locationEl = document.getElementById("location-el")
+    locationEl = document.getElementById("location-el"),
+    domoClientIdEl = document.getElementById("domoClientId-el")
+
 
 opponentInputEl.addEventListener("keyup", function() {
     checkInput()
@@ -9,6 +11,11 @@ opponentInputEl.addEventListener("keyup", function() {
 locationEl.addEventListener("keyup", function() {
     checkInput()
 })
+
+domoTokenEl.addEventListener("keyup", function() {
+    checkInput()
+})
+
 
 startButton.addEventListener("click", function() {
     let game = {
@@ -46,7 +53,7 @@ function formatDate() {
 }
 
 function checkInput() {
-    if (opponentInputEl.value !== '' && locationEl.value !== '') {
+    if (opponentInputEl.value !== '' && locationEl.value !== '' && domoTokenEl.value !== '') {
         startButton.classList.remove("buttonDisabled")
         startButton.disabled = false
     } else {
@@ -54,3 +61,5 @@ function checkInput() {
         startButton.disabled = true
     }
 }
+
+
