@@ -183,12 +183,12 @@ function drawUI() {
             body: gameString
     };
 
-/*
+
     try {
         const response = await fetch(url, options)
         const data = await response.json()
     } catch (error) {
         // console.error(error)
     }
-*/
+
 }
