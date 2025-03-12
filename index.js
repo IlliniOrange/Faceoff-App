@@ -144,11 +144,19 @@ function drawUI() {
     };
     
     try {
-        const response = await fetch(url, options);
-        const data = await response.json();  
-        return await data.access_token
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        if (data.error) {
+            alert(`There was an error authenticating to Domo: ${data.error}`)
+            console.log(data.error)
+         } else {
+            return await data.access_token
+            console.log("Tested OK")
+         }
     } catch (error) {
-        console.error(error);
+       console.log(error.message)
+       alert("There was an error saving the game")
     }
  }
 
@@ -171,11 +179,12 @@ function drawUI() {
             body: gameString
     };
 
+/* test 
     try {
         const response = await fetch(url, options)
         const data = await response.json()
     } catch (error) {
         // console.error(error)
     }
-
+*/
 }
