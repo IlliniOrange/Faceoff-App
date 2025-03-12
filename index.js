@@ -143,26 +143,29 @@ function drawUI() {
       }
     };
     
-    try {
-        const response = await fetch(url, options)
-        const data = await response.json()
-        console.log(data)
-        if (data.error) {
-            alert(`There was an error authenticating to Domo: ${data.error}`)
-            console.log(data.error)
-         } else {
-            return await data.access_token
-            console.log("Tested OK")
-         }
-    } catch (error) {
-       console.log(error.message)
-       alert("There was an error saving the game")
-    }
+    const response = await fetch(url, options)
+    const data = await response.json()
+
+    if (response.ok) {
+        return data.access_token
+        } else {
+            alert(`Error retrieving access token: ${data.error}`)
+            throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
+        }
  }
 
  async function writeDataToDomo (game) {
     const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
-    const authorizationValue = 'Bearer ' + await getAccessToken()
+    
+   // Gather the Access Token
+
+    try {
+        const authorizationValue = 'Bearer ' + await getAccessToken()
+        } catch (error) {
+            console.log(error.message)
+            alert("The game was not saved becuase I'm unable to authenticate to Domo")
+            return
+    }
     
     let gameArray = []
     for (const [key, value] of Object.entries(game)) {
@@ -179,7 +182,7 @@ function drawUI() {
             body: gameString
     };
 
-/* test 
+/*
     try {
         const response = await fetch(url, options)
         const data = await response.json()
