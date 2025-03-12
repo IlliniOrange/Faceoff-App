@@ -130,22 +130,22 @@ function drawUI() {
 // Function to gather and return Access Token, or throw error if unable
 
  async function getAccessToken() {
-    const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials';
-    const clientId = creds.id
-    const clientSecret = creds.secret
-    const authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret )
+    const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials',
+          clientId = creds.id,
+          clientSecret = creds.secret,
+          authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret ),
     
-    const options = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        Authorization: authorizationValue,
-        grant_type: 'data',
-      }
-    };
+           options = {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                Authorization: authorizationValue,
+                grant_type: 'data',
+                }
+            };
     
-    const response = await fetch(url, options)
-    const data = await response.json()
+    const response = await fetch(url, options),
+          data = await response.json()
 
     if (response.ok) {
         return data.access_token
