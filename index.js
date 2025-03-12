@@ -173,7 +173,7 @@ function drawUI() {
         gameArray.push(value)
     }
     const gameString = gameArray.join(","),
-        options = {
+          options = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'text/csv',
