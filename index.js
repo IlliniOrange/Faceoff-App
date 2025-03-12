@@ -127,7 +127,8 @@ function drawUI() {
     - For now, not expecting to save data in less than 1 hour intervals, the code will refresh
     the token on each call */
     
-// Get an access token
+// Function to gather and return Access Token, or throw error if unable
+
  async function getAccessToken() {
     const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials';
     const clientId = creds.id
@@ -157,7 +158,7 @@ function drawUI() {
  async function writeDataToDomo (game) {
     const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
     
-   // Gather the Access Token
+   // Call function for Access Token, notify and halt if unable
 
     try {
         const authorizationValue = 'Bearer ' + await getAccessToken()
