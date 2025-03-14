@@ -27,26 +27,6 @@ let game = {
     gbsLost: 0,
 }
 
-
-/**********  Load game from Local Storage, otherwise redirect to new game page  **********/
-
-let ls = localStorage.getItem("game")
-if (ls) {
-    game = JSON.parse(ls)
-    saveButtonEl.classList.remove("buttonDisabled")
-    } else {
-        window.location.href = "newgame.html"
-}
-
-/**********  Get Creds from Storage  **********/
-
-let creds = JSON.parse(localStorage.getItem("Domo"))
-
-
-/**********  Render page *********/
-
-drawUI()
-
 /**********  Event Listeners  **********/
 
 winButtonEl.addEventListener("click", function() {
@@ -75,8 +55,7 @@ gbLoseButtonEl.addEventListener("click", function() {
 
 newGameButtonEl.addEventListener("click", function() {
     if (confirm("Are you sure? This will delete the current game")) {
-        localStorage.removeItem("game")
-        window.location.href = "newgame.html"
+        startNewGame()
     }
 })
 
@@ -86,8 +65,28 @@ saveButtonEl.addEventListener("click", function() {
     }
 })
 
-/**********  Increment a stat and update the HTML element  **********/
+/*************************************** Main *****************************************************/
 
+let ls = localStorage.getItem("game") // Check if game exists in local storage, otherwise redirect to new game page
+if (ls) {
+    game = JSON.parse(ls)
+    saveButtonEl.classList.remove("buttonDisabled")
+    } else {
+        window.location.href = "newgame.html"
+}
+let creds = JSON.parse(localStorage.getItem("Domo")) // Get creds from local storage
+renderPage() // Draw the UI
+
+/*****************************************   FUNCTIONS  ********************************************/
+
+// Start a new game
+
+function startNewGame() {
+    localStorage.removeItem("game")
+    window.location.href = "newgame.html"
+}
+
+// Increment a stat and update the HTML element
 function incrementStat(stat, element) {
     stat++
     element.textContent = stat
@@ -98,22 +97,20 @@ function calcWinPercent(win, total) {
     game.winPercent = win/total
     winPercentEl.textContent = formatPercentage(game.winPercent)
 }
-/**********  Save game to Local Storage  **********/
 
+// Save game to Local Storage
 function saveGame() {
     localStorage.setItem("game", JSON.stringify(game))
     saveButtonEl.classList.remove("buttonDisabled")  // Enable the save button after an event
     saveButtonEl.disabled = false
 }
 
-// Scorekeeping functions
-
 function formatPercentage(num) {
     return (num * 100).toFixed(2) + '%';
   }
 
 // Draw the UI
-function drawUI() {
+function renderPage() {
     gridHeaderEl.textContent = "Vs: " + game.opponent
     totalWonEl.textContent = game.faceOffsWon
     totalLostEl.textContent = game.faceOffsLost
@@ -158,10 +155,13 @@ function drawUI() {
  async function writeDataToDomo (game) {
     const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
     
-   // Call function for Access Token, notify and halt if unable
+    let authorizationValue = ''
+
+    // Call function for Access Token, notify and halt if unable
 
     try {
-        const authorizationValue = 'Bearer ' + await getAccessToken()
+        authorizationValue = 'Bearer ' + await getAccessToken()
+        
         } catch (error) {
             console.log(error.message)
             alert("The game was not saved becuase I'm unable to authenticate to Domo")
@@ -181,14 +181,20 @@ function drawUI() {
                 Authorization: authorizationValue,
             },
             body: gameString
-    };
-
+    }
 
     try {
-        const response = await fetch(url, options)
-        const data = await response.json()
+        const response = await fetch(url, options)  
+        if (response.ok) {
+            alert("Game saved successfully!")
+            startNewGame()
+        } else {
+            const data = await response.json()
+            alert((`${data.message} Status: ${data.status}, ${data.statusReason}`))
+            throw new Error (`${data.message} Status: ${data.status}, ${data.statusReason}`)
+        }
     } catch (error) {
-        // console.error(error)
+        console.error(error.message)
     }
 
 }
