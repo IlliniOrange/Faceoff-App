@@ -9,10 +9,17 @@
         <div class="gridHeader">Create New Game</div>
         <div class="gridHeader"><input type = "text" id="opponentInput-el" placeholder="Enter Opponent"></div>
         <div class="gridHeader"><input type = "text" id="location-el" placeholder="Enter Location"></div>
+        <div class="gridHeader"><select id = "gameType-el">
+            <option value ="" disabled selected hidden>Game Type</option>
+            <option value="Club">Club</option>
+            <option value="JV">JV</option>
+            <option value="Varsity">Varsity</option>
+            <option value="Rec">Rec</option>
+        </select></div>
         <div class="gridHeader"><input type = "text" id="domoClientId-el" placeholder="Domo Client ID"></div>
         <div class="gridHeader"><input type = "text" id="domoClientSecret-el" placeholder="Domo Client Secret"></div>
         <div class="wideButton"><button disabled class="buttonDisabled" id="startButton-el">Start Game</button></div>
-
+        
     </div>
 
 <script type="module" src="newgame.js"></script>

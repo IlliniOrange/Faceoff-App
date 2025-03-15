@@ -2,18 +2,25 @@ const startButton = document.getElementById("startButton-el"),
     opponentInputEl = document.getElementById("opponentInput-el"),
     locationEl = document.getElementById("location-el"),
     domoClientIdEl = document.getElementById("domoClientId-el"),
-    domoClientSecretEl = document.getElementById("domoClientSecret-el")
+    domoClientSecretEl = document.getElementById("domoClientSecret-el"),
+    gameTypeEl = document.getElementById("gameType-el")
 
 let creds = {
     id: "",
     secret: "",
 }
 
+/****************** Event Listeners *********************/
 opponentInputEl.addEventListener("keyup", function() {
     checkInput()
 })
 
 locationEl.addEventListener("keyup", function() {
+    checkInput()
+})
+
+gameTypeEl.addEventListener("change", function() {
+    gameTypeEl.style.color = "rgba(0, 0, 0, 1)"
     checkInput()
 })
 
@@ -25,12 +32,12 @@ domoClientIdEl.addEventListener("keyup", function() {
     checkInput()
 })
 
-
 startButton.addEventListener("click", function() {
     let game = {
         date: formatDate(),
         opponent: "",
         location: "",
+        gameType: "",
         faceOffsWon: 0,
         faceOffsLost: 0,
         totalFaceOffs: 0,
@@ -40,6 +47,7 @@ startButton.addEventListener("click", function() {
     }
     game.opponent = opponentInputEl.value
     game.location = locationEl.value
+    game.gameType = gameTypeEl.value
     creds.id = domoClientIdEl.value
     creds.secret = domoClientSecretEl.value
     localStorage.setItem("game", JSON.stringify(game))
@@ -65,7 +73,7 @@ function formatDate() {
 }
 
 function checkInput() {
-    if (opponentInputEl.value !== '' && locationEl.value !== '' && domoClientIdEl.value !== '' && domoClientSecretEl.value !== '') {
+    if (opponentInputEl.value !== '' && locationEl.value !== '' && domoClientIdEl.value !== '' && domoClientSecretEl.value !== '' && gameTypeEl.value !== '') {
         startButton.classList.remove("buttonDisabled")
         startButton.disabled = false
     } else {
