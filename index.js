@@ -10,7 +10,8 @@ const totalWonEl = document.getElementById("totalWon-el"),
     opponentEl = document.getElementById("opponent-el"),
     saveButtonEl = document.getElementById("saveButton-el"),
     totalGBsEl = document.getElementById("totalGBs-el"),
-    gbsLostEl = document.getElementById("gbsLost-el"),
+    totalGoalsEl = document.getElementById("totalGoals-el"),
+    goalButtonEl = document.getElementById("goalButton-el"),
     gbWonButtonEl = document.getElementById("gbWonButton-el"),
     gbLoseButtonEl = document.getElementById("gbLoseButton-el"),
     gridHeaderEl = document.getElementById("gridHeader-el")
@@ -25,7 +26,9 @@ let game = {
     winPercent: 0,
     gbsWon : 0,
     gbsLost: 0,
+    goals: 0,
 }
+
 
 /**********  Event Listeners  **********/
 
@@ -48,8 +51,8 @@ gbWonButtonEl.addEventListener("click", function() {
     saveGame()
 })
 
-gbLoseButtonEl.addEventListener("click", function() {
-    game.gbsLost = incrementStat(game.gbsLost, gbsLostEl)
+goalButtonEl.addEventListener("click", function() {
+    game.goals = incrementStat(game.goals, totalGoalsEl)
     saveGame()
 })
 
@@ -74,6 +77,7 @@ if (ls) {
     } else {
         window.location.href = "newgame.html"
 }
+
 let creds = JSON.parse(localStorage.getItem("Domo")) // Get creds from local storage
 renderPage() // Draw the UI
 
@@ -117,7 +121,7 @@ function renderPage() {
     totalFaceoffsEl.textContent = game.totalFaceOffs
     winPercentEl.textContent = formatPercentage(game.winPercent)
     totalGBsEl.textContent = game.gbsWon
-    gbsLostEl.textContent = game.gbsLost
+    totalGoalsEl.textContent = game.goals
 }
 
 /* This section contains the functions used to write the data to Domo through OAuth API
@@ -126,73 +130,73 @@ function renderPage() {
     
 // Function to gather and return Access Token, or throw error if unable
 
- async function getAccessToken() {
-    const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials',
-          clientId = creds.id,
-          clientSecret = creds.secret,
-          authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret ),
-    
-           options = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                Authorization: authorizationValue,
-                grant_type: 'data',
-                }
-            };
-    
-    const response = await fetch(url, options),
-          data = await response.json()
+async function getAccessToken() {
+const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials',
+        clientId = creds.id,
+        clientSecret = creds.secret,
+        authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret ),
 
+        options = {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            Authorization: authorizationValue,
+            grant_type: 'data',
+            }
+        };
+
+const response = await fetch(url, options),
+        data = await response.json()
+
+if (response.ok) {
+    return data.access_token
+    } else {
+        alert(`Error retrieving access token: ${data.error}`)
+        throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
+    }
+}
+
+async function writeDataToDomo (game) {
+const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
+
+let authorizationValue = ''
+
+// Call function for Access Token, notify and halt if unable
+
+try {
+    authorizationValue = 'Bearer ' + await getAccessToken()
+    
+    } catch (error) {
+        console.log(error.message)
+        alert("The game was not saved becuase I'm unable to authenticate to Domo")
+        return
+}
+
+let gameArray = []
+for (const [key, value] of Object.entries(game)) {
+    gameArray.push(value)
+}
+const gameString = gameArray.join(","),
+        options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'text/csv',
+            Accept: 'application/json',
+            Authorization: authorizationValue,
+        },
+        body: gameString
+}
+
+try {
+    const response = await fetch(url, options)  
     if (response.ok) {
-        return data.access_token
-        } else {
-            alert(`Error retrieving access token: ${data.error}`)
-            throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
-        }
- }
-
- async function writeDataToDomo (game) {
-    const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
-    
-    let authorizationValue = ''
-
-    // Call function for Access Token, notify and halt if unable
-
-    try {
-        authorizationValue = 'Bearer ' + await getAccessToken()
-        
-        } catch (error) {
-            console.log(error.message)
-            alert("The game was not saved becuase I'm unable to authenticate to Domo")
-            return
+        alert("Game saved successfully!")
+        startNewGame()
+    } else {
+        const data = await response.json()
+        alert((`${data.message} Status: ${data.status}, ${data.statusReason}`))
+        throw new Error (`${data.message} Status: ${data.status}, ${data.statusReason}`)
     }
-    
-    let gameArray = []
-    for (const [key, value] of Object.entries(game)) {
-        gameArray.push(value)
-    }
-    const gameString = gameArray.join(","),
-          options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'text/csv',
-                Accept: 'application/json',
-                Authorization: authorizationValue,
-            },
-            body: gameString
-    }
-
-    try {
-        const response = await fetch(url, options)  
-        if (response.ok) {
-            alert("Game saved successfully!")
-            startNewGame()
-        } else {
-            const data = await response.json()
-            alert((`${data.message} Status: ${data.status}, ${data.statusReason}`))
-            throw new Error (`${data.message} Status: ${data.status}, ${data.statusReason}`)
-        }
     } catch (error) {
         console.error(error.message)
     }

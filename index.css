@@ -22,10 +22,10 @@ button {
     /* background-image: linear-gradient(#584b4b, #a6eb37); /*TRUE SKIN*/
 }
 
-  .inputButton {
-    width: 90px;
-    height: auto;
-  }
+.inputButton {
+  width: 90px;
+  height: auto;
+}
   
 .grid-container {
     display: grid;

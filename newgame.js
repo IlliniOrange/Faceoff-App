@@ -44,6 +44,7 @@ startButton.addEventListener("click", function() {
         winPercent: 0,
         gbsWon: 0,
         gbsLost: 0,
+        goals: 0,
     }
     game.opponent = opponentInputEl.value
     game.location = locationEl.value
