@@ -90,7 +90,7 @@ function startNewGame() {
     window.location.href = "newgame.html"
 }
 
-// Increment a stat and update the HTML element
+// Increment a stat, update the HTML element, and trigger CSS animation
 function incrementStat(stat, element) {
     stat++
     element.textContent = stat
