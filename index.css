@@ -1,8 +1,7 @@
-
 body {
   font-family: Helvetica, Arial, san-serif;
   background-color: rgb(63, 71, 71);
-  color:bisque;
+  color: bisque;
 }
 
 h2 {
@@ -10,110 +9,121 @@ h2 {
   color: white;
   margin-left: 3%
 }
-  
+
 button {
-    height: 130px;
-    font-size: 80px;
-    background-color: #6d8893;
-    color: white;
-    border: 3px solid rgb(226, 213, 213);
-    border-radius: 20px;
-    background-image: linear-gradient(#6d8893, #3d6c7e); /*JD SKIN*/
-    /* background-image: linear-gradient(#584b4b, #a6eb37); /*TRUE SKIN*/
+  height: 130px;
+  font-size: 80px;
+  background-color: #6d8893;
+  color: white;
+  border: 3px solid rgb(226, 213, 213);
+  border-radius: 20px;
+  background-image: linear-gradient(#6d8893, #3d6c7e);
+  /*JD SKIN*/
+  /* background-image: linear-gradient(#584b4b, #a6eb37); /*TRUE SKIN*/
 }
 
 .inputButton {
   width: 90px;
   height: auto;
 }
-  
+
 .grid-container {
-    display: grid;
-    /* grid-template-columns: auto auto; */
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto;
-    gap: 5px;
-    background-color: #123963; /*JD SKIN */
-    padding: 2ch;
-    /* background-image: url(assets/images/True_UT.png); /*TRUE SKIN*/
-    /* background-repeat: no-repeat; /*TRUE SKIN*/
-    /* background-position: center; /*TRUE SKIN*/
-    /* background-size: cover; /*TRUE SKIN*/
+  display: grid;
+  /* grid-template-columns: auto auto; */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto;
+  gap: 5px;
+  background-color: #123963;
+  /*JD SKIN */
+  padding: 2ch;
+  /* Prevent animated children from causing page scroll or layout shifts by
+     clipping any visual overflow. Animations will visually overlay the
+     container instead of pushing neighboring elements. */
+  overflow: hidden;
+  /* background-image: url(assets/images/True_UT.png); /*TRUE SKIN*/
+  /* background-repeat: no-repeat; /*TRUE SKIN*/
+  /* background-position: center; /*TRUE SKIN*/
+  /* background-size: cover; /*TRUE SKIN*/
 }
-  
-  .grid-container > div {
-    background-color: #44bbd0;
-    /* background-color: rgb(76, 81, 66); /* TRUE SKIN */
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    color: #123963; /* JD SKIN */
-    /* opacity: 95%; /*TRUE SKIN*/
-    /* color: #a6eb37; /*TRUE SKIN */
-   }
-  
-  .gridHeader {
-    grid-column: 1 / span 2;
-    font-size: 60px;
-  }
 
-  .headingLeft {
-      grid-column: 1 / span 1;
-      font-size: 80px;
-  }
-  
-  .headingRight {
-      grid-column: 2 / span 1;
-      font-size: 80px;
-  }
-  
-  .statLeft {
-      grid-column: 1 / span 1;
-      font-size: 90px;
-  }
-  
-  .statRight {
-      grid-column: 2 / span 1;
-      font-size: 90px
-  }
-  
-  .bigButtonLeft {
-      grid-column: 1 / span 1;
-      touch-action: manipulation;
-  }
-  
-  .bigButtonRight { 
-      grid-column: 2 / span 1;
-      touch-action: manipulation;
-  }
+.grid-container>div {
+  background-color: #44bbd0;
+  /* background-color: rgb(76, 81, 66); /* TRUE SKIN */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  color: #123963;
+  /* JD SKIN */
+  /* Contain animated children so their transforms don't produce scrollbars
+     or affect the grid sizing. Positioning allows transforms to overlay. */
+  position: relative;
+  overflow: hidden;
+  /* opacity: 95%; /*TRUE SKIN*/
+  /* color: #a6eb37; /*TRUE SKIN */
+}
 
-  .wideButton {
-    grid-column: 1 / span 2;
-      height: 130px;
-  }
-  
-  .buttonDisabled {
-    opacity: 0.4;
-  }
+.gridHeader {
+  grid-column: 1 / span 2;
+  font-size: 60px;
+}
 
-  button:active {
-    background: #350b0b;
-    -webkit-box-shadow: inset 0px 0px 5px #381616;
-       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
-            box-shadow: inset 0px 0px 5px #c1c1c1;
-     outline: none;
-  }
+.headingLeft {
+  grid-column: 1 / span 1;
+  font-size: 80px;
+}
+
+.headingRight {
+  grid-column: 2 / span 1;
+  font-size: 80px;
+}
+
+.statLeft {
+  grid-column: 1 / span 1;
+  font-size: 90px;
+}
+
+.statRight {
+  grid-column: 2 / span 1;
+  font-size: 90px
+}
+
+.bigButtonLeft {
+  grid-column: 1 / span 1;
+  touch-action: manipulation;
+}
+
+.bigButtonRight {
+  grid-column: 2 / span 1;
+  touch-action: manipulation;
+}
+
+.wideButton {
+  grid-column: 1 / span 2;
+  height: 130px;
+}
+
+.buttonDisabled {
+  opacity: 0.4;
+}
+
+button:active {
+  background: #350b0b;
+  -webkit-box-shadow: inset 0px 0px 5px #381616;
+  -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+  box-shadow: inset 0px 0px 5px #c1c1c1;
+  outline: none;
+}
 
 input {
   height: 100px;
   padding-left: 20px;
   padding-top: 10px;
   padding-bottom: 20px;
-  font-size:80px;
+  font-size: 80px;
   border-width: 4px;
   font-style: italic;
-  background-color:beige
+  background-color: beige
 }
 
 
@@ -123,22 +133,38 @@ select {
   padding-left: 20px;
   padding-top: 10px;
   padding-bottom: 20px;
-  font-size:80px;
+  font-size: 80px;
   border-width: 4px;
   font-style: italic;
-  background-color:beige;
+  background-color: beige;
 }
 
 /* Micro-interaction animations for stat updates */
 .pulse {
-  animation: stat-pulse 420ms cubic-bezier(.2,.9,.2,1);
+  animation: stat-pulse 1000ms cubic-bezier(.2, .9, .2, 1);
+  /* Hint the browser that transform and box-shadow will change to optimize
+     rendering and avoid layout recomputations. */
+  will-change: transform, box-shadow;
 }
 
 @keyframes stat-pulse {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.5); box-shadow: 0 10px 24px rgba(68,187,208,0.18); }
-  60% { transform: scale(1.04); }
-  100% { transform: scale(1); box-shadow: none; }
+  0% {
+    transform: scale(1);
+  }
+
+  /* Reduce peak scale to avoid large visual overflow while keeping the
+     emphasis effect. */
+  30% {
+    transform: scale(1.02);
+    box-shadow: 0 10px 24px rgba(68, 187, 208, 0.18);
+    background-color: rgb(150, 150, 152);
+    color: white;
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
 }
 
 /* Subtle flash for percentage changes */
@@ -147,13 +173,26 @@ select {
 }
 
 @keyframes stat-flash {
-  0% { background-color: transparent; color: bisque; }
-  30% { background-color: rgba(68,187,208,0.14); color: #fff; }
-  100% { background-color: transparent; color: bisque; }
+  0% {
+    background-color: transparent;
+    color: bisque;
+  }
+
+  30% {
+    background-color: rgba(68, 187, 208, 0.14);
+    color: #fff;
+  }
+
+  100% {
+    background-color: transparent;
+    color: bisque;
+  }
 }
 
 /* Ensure animated elements have transform origin and smoothness */
-.statLeft, .statRight, #winPercent-el {
+.statLeft,
+.statRight,
+#winPercent-el {
   transform-origin: center center;
   will-change: transform, box-shadow, background-color;
 }

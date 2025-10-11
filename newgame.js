@@ -10,25 +10,41 @@ let creds = {
     secret: "",
 }
 
+/****************** Helper Functions *********************/
+
+// Add event listener to element for specified event type that calls checkInput. checkInput enables the start button if all fields are filled in.
+function addGenericListener(eventType, element) {
+    element.addEventListener(eventType, () => checkInput())
+}
+
+// Format the current date and time as MM/DD/YYYY HH:MM:SS
+function formatDate() {
+    var d = new Date(),
+        month = '' + (d.getUTCMonth() + 1),
+        day = '' + d.getUTCDate(),
+        year = d.getUTCFullYear(),
+        hour = d.getUTCHours(),
+        min = d.getUTCMinutes(),
+        sec = d.getUTCSeconds()
+    
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [month, day, year].join('/') + " " + [hour, min, sec].join(':')
+}
+
 /****************** Event Listeners *********************/
-opponentInputEl.addEventListener("keyup", function() {
-    checkInput()
-})
 
-locationEl.addEventListener("keyup", function() {
-    checkInput()
-})
+addGenericListener("keyup", opponentInputEl)
+addGenericListener("keyup", locationEl)
+addGenericListener("keyup", domoClientIdEl)
+addGenericListener("keyup", domoClientSecretEl) 
 
+// Game Type isn't generic because it's a dropdown; we need to change the color of the text when a selection is made
 gameTypeEl.addEventListener("change", function() {
     gameTypeEl.style.color = "rgba(0, 0, 0, 1)"
-    checkInput()
-})
-
-domoClientSecretEl.addEventListener("keyup", function() {
-    checkInput()
-})
-
-domoClientIdEl.addEventListener("keyup", function() {
     checkInput()
 })
 
@@ -56,23 +72,6 @@ startButton.addEventListener("click", function() {
     window.location.href = "index.html"
 })
 
-function formatDate() {
-    var d = new Date(),
-        month = '' + (d.getUTCMonth() + 1),
-        day = '' + d.getUTCDate(),
-        year = d.getUTCFullYear(),
-        hour = d.getUTCHours(),
-        min = d.getUTCMinutes(),
-        sec = d.getUTCSeconds()
-    
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-
-    return [month, day, year].join('/') + " " + [hour, min, sec].join(':')
-}
-
 function checkInput() {
     if (opponentInputEl.value !== '' && locationEl.value !== '' && domoClientIdEl.value !== '' && domoClientSecretEl.value !== '' && gameTypeEl.value !== '') {
         startButton.classList.remove("buttonDisabled")
@@ -83,7 +82,9 @@ function checkInput() {
     }
 }
 
-function getDomoCreds() {
+// Check if creds exist in local storage and populate the fields if they do.  If they don't the UI fields will be displaeyed and mandatory
+
+function checkForDomoCreds() {
     let ls = localStorage.getItem("Domo")
     if (ls) {
         creds = JSON.parse(ls)
@@ -95,7 +96,13 @@ function getDomoCreds() {
 
 }
 
-getDomoCreds()
+function initializeApp() {
+    checkForDomoCreds()
+}
+
+// ** Initialize the app on page load
+initializeApp()
+
 
 
 
