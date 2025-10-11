@@ -128,3 +128,32 @@ select {
   font-style: italic;
   background-color:beige;
 }
+
+/* Micro-interaction animations for stat updates */
+.pulse {
+  animation: stat-pulse 420ms cubic-bezier(.2,.9,.2,1);
+}
+
+@keyframes stat-pulse {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.12); box-shadow: 0 10px 24px rgba(68,187,208,0.18); }
+  60% { transform: scale(1.04); }
+  100% { transform: scale(1); box-shadow: none; }
+}
+
+/* Subtle flash for percentage changes */
+.flash {
+  animation: stat-flash 560ms ease;
+}
+
+@keyframes stat-flash {
+  0% { background-color: transparent; color: bisque; }
+  30% { background-color: rgba(68,187,208,0.14); color: #fff; }
+  100% { background-color: transparent; color: bisque; }
+}
+
+/* Ensure animated elements have transform origin and smoothness */
+.statLeft, .statRight, #winPercent-el {
+  transform-origin: center center;
+  will-change: transform, box-shadow, background-color;
+}

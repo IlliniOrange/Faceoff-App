@@ -94,12 +94,41 @@ function startNewGame() {
 function incrementStat(stat, element) {
     stat++
     element.textContent = stat
+    // trigger a brief pulse animation when a stat changes
+    triggerPulse(element)
     return stat
 }
 
 function calcWinPercent(win, total) {
     game.winPercent = win/total
     winPercentEl.textContent = formatPercentage(game.winPercent)
+    // flash the win percent to draw attention when it changes
+    triggerFlash(winPercentEl)
+}
+
+// Add animation helper utilities
+function triggerPulse(el) {
+    if (!el) return
+    el.classList.remove('pulse')
+    // force reflow to restart animation
+    void el.offsetWidth
+    el.classList.add('pulse')
+    // clean up after animation completes
+    el.addEventListener('animationend', function handler() {
+        el.classList.remove('pulse')
+        el.removeEventListener('animationend', handler)
+    })
+}
+
+function triggerFlash(el) {
+    if (!el) return
+    el.classList.remove('flash')
+    void el.offsetWidth
+    el.classList.add('flash')
+    el.addEventListener('animationend', function handler() {
+        el.classList.remove('flash')
+        el.removeEventListener('animationend', handler)
+    })
 }
 
 // Save game to Local Storage
