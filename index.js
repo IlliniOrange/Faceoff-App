@@ -39,11 +39,13 @@ let game = { ...defaultGame }
 let ls = localStorage.getItem("game")
     if (ls) {
         game = JSON.parse(ls)
-        saveButtonEl.classList.remove("buttonDisabled")
-        let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret from local storage
+        saveButtonEl.classList.remove("buttonDisabled")      
         } else {
             window.location.href = "newgame.html"
     }
+
+let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret from local storage
+console.log(creds)  
 
 
 /********************************************  Event Listeners  *************************************************/
