@@ -45,7 +45,6 @@ let ls = localStorage.getItem("game")
     }
 
 let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret from local storage
-console.log(creds)  
 
 
 /********************************************  Event Listeners  *************************************************/
