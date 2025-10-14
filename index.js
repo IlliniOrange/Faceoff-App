@@ -147,7 +147,6 @@ function startNewGame() {
     window.location.href = "newgame.html"
 }
 
-
 // Save game to Local Storage
 function saveGame() {
     localStorage.setItem("game", JSON.stringify(game))
@@ -187,7 +186,7 @@ const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials',
         }
 }
 
-async function writeDataToDomo (game) {
+async function writeDataToDomo(game) {
 const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
 
     let authorizationValue = ''
