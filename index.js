@@ -2,14 +2,10 @@
 
 const DOMO_API = {
     TOKEN_URL: 'https://api.domo.com/oauth/token?grant_type=client_credentials',
-    DATASET_ID: '497a5fdd-17a6-4ec7-b0d2-1298446c55a0',
+    DATASET_ID: '497a5fdd-17a6-4ec7-b0d2-1298446c55a0-1',
 }
 
 /********************************************  Initialize Variables  *************************************************/
-
-function getEl(id) {
-    return document.getElementById(id);
-}
 
 const totalWonEl = getEl("totalWon-el"),
     totalLostEl = getEl("totalLost-el"),
@@ -77,6 +73,11 @@ function setupEventListeners() {
 }
 
 /********************************************* Halper Functions ***********************************************/
+
+// Get element by ID
+function getEl(id) {
+    return document.getElementById(id);
+}
 
 // Handle a faceoff win or loss, incrementing the appropriate stats and updating the UI
 function handleFaceoff(type) {
@@ -164,45 +165,58 @@ function saveGame() {
 /* This section contains the functions used to write the data to Domo through OAuth API
     - For now, not expecting to save data in less than 1 hour intervals, the code will refresh
     the token on each call */
-    
-// Function to gather and return Access Token, or throw error if unable
-
-async function getAccessToken() {
-const url = DOMO_API.TOKEN_URL,
-    clientId = creds.id,
-    clientSecret = creds.secret,
-    authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret ),
-
-    options = {
-    method: 'GET',
-    headers: {
-        Accept: 'application/json',
-        Authorization: authorizationValue,
-        grant_type: 'data',
-        }
-    };
-
-    const response = await fetch(url, options),
-            data = await response.json()
-
-    if (response.ok) {
-        return data.access_token
-        } else {
-            alert(`Error retrieving access token: ${data.error}`)
-            throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
-        }
-}
 
 async function writeDataToDomo(game) {
 const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?updateMethod=APPEND`;
 
+    /**************** Helper functions (writeDataToDomo scope) ******************/
+
+    // Get an access token from Domo
+    async function getAccessToken() {
+        const url = DOMO_API.TOKEN_URL,
+        clientId = creds.id,
+        clientSecret = creds.secret,
+        authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret ),
+
+        options = {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            Authorization: authorizationValue,
+            grant_type: 'data',
+            }
+        };
+
+        const response = await fetch(url, options),
+                data = await response.json()
+
+        if (response.ok) {
+            return data.access_token
+            } else {
+                alert(`Error retrieving access token: ${data.error}`)
+                throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
+            }
+    }
+
+    // Toggle the save button between enabled and disabled states with appropriate text during API call 
+    function toggleSaveButton(state, text) {
+        if (state === "disable") {
+            saveButtonEl.disabled = true // Disable the save button during API call
+            saveButtonEl.classList.add("buttonDisabled")  // Set button opacity to disabled view
+        } else {
+            saveButtonEl.disabled = false // Re-enable the save button
+            saveButtonEl.classList.remove("buttonDisabled")  // Set button to full opacity after saving
+        }
+        saveButtonEl.textContent = text
+    }         
+
+    /**************** Obtain Token and write data *******************************/
+
     let authorizationValue = ''
 
     // Call function for Access Token, notify and halt if unable
-
     try {
         authorizationValue = 'Bearer ' + await getAccessToken()
-        
         } catch (error) {
             console.log(error.message)
             alert("The game was not saved becuase I'm unable to authenticate to Domo")
@@ -226,15 +240,11 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
     }
 
     try {
-        saveButtonEl.disabled = true // Disable the save button during API call 
-        saveButtonEl.classList.add("buttonDisabled")  // Set button opacity to disabled view
-        saveButtonEl.textContent = "Saving..."  // Change button text to indicate saving
+        toggleSaveButton("disable", "Saving...")  // Change button text to indicate saving and disable it
         const response = await fetch(url, options)  
         if (response.ok) {
             alert("Game saved successfully!")
-            saveButtonEl.disabled = false // Re-enable the save button
-            saveButtonEl.textContent = "Save Game"  // Restore button text
-            saveButtonEl.classList.remove("buttonDisabled")  // Set button to full opacity after saving
+            toggleSaveButton("enable", "Save Game")  // Re-enable the save button and reset text
             startNewGame()
         } else {
             const data = await response.json()
@@ -242,11 +252,9 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
             throw new Error (`${data.message} Status: ${data.status}, ${data.statusReason}`)
         }
         } catch (error) {
+            toggleSaveButton("enable", "Save Game")  // Re-enable the save button and reset text
             console.error(error.message)
         }
-
-
-
 }
 
 // Initialize the UI
