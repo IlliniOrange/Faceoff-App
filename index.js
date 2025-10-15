@@ -1,3 +1,10 @@
+/********************************************  Constants  ************************************************************/
+
+const DOMO_API = {
+    TOKEN_URL: 'https://api.domo.com/oauth/token?grant_type=client_credentials',
+    DATASET_ID: '497a5fdd-17a6-4ec7-b0d2-1298446c55a0',
+}
+
 /********************************************  Initialize Variables  *************************************************/
 
 function getEl(id) {
@@ -33,16 +40,16 @@ const defaultGame = {
     goals: 0,
 };
 
-let game = { ...defaultGame }
-
 // Load game from Local Storage, if it doesn't exist redirect to new game page
-let ls = localStorage.getItem("game")
-    if (ls) {
-        game = JSON.parse(ls)
-        saveButtonEl.classList.remove("buttonDisabled")      
-        } else {
-            window.location.href = "newgame.html"
-    }
+let game
+try {
+    const ls = localStorage.getItem("game")
+        game = ls ? JSON.parse(ls) : { ...defaultGame }
+        if (!ls) window.location.href = "newgame.html";
+    }   catch (error) {
+        console.error("Error loading game from local storage:", error);
+        game = { ...defaultGame };
+}
 
 let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret from local storage
 
@@ -161,7 +168,7 @@ function saveGame() {
 // Function to gather and return Access Token, or throw error if unable
 
 async function getAccessToken() {
-const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials',
+const url = DOMO_API.TOKEN_URL,
     clientId = creds.id,
     clientSecret = creds.secret,
     authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret ),
@@ -187,7 +194,7 @@ const url = 'https://api.domo.com/oauth/token?grant_type=client_credentials',
 }
 
 async function writeDataToDomo(game) {
-const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55a0/data?updateMethod=APPEND';
+const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?updateMethod=APPEND`;
 
     let authorizationValue = ''
 
@@ -206,6 +213,7 @@ const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55
     for (const [key, value] of Object.entries(game)) {
         gameArray.push(value)
     }
+
     const gameString = gameArray.join(","),
             options = {
             method: 'PUT',
@@ -218,9 +226,15 @@ const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55
     }
 
     try {
+        saveButtonEl.disabled = true // Disable the save button during API call 
+        saveButtonEl.classList.add("buttonDisabled")  // Set button opacity to disabled view
+        saveButtonEl.textContent = "Saving..."  // Change button text to indicate saving
         const response = await fetch(url, options)  
         if (response.ok) {
             alert("Game saved successfully!")
+            saveButtonEl.disabled = false // Re-enable the save button
+            saveButtonEl.textContent = "Save Game"  // Restore button text
+            saveButtonEl.classList.remove("buttonDisabled")  // Set button to full opacity after saving
             startNewGame()
         } else {
             const data = await response.json()
@@ -230,6 +244,8 @@ const url = 'https://api.domo.com/v1/datasets/497a5fdd-17a6-4ec7-b0d2-1298446c55
         } catch (error) {
             console.error(error.message)
         }
+
+
 
 }
 
