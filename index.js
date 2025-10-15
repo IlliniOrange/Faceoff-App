@@ -86,7 +86,6 @@ function handleFaceoff(type) {
     } else if (type === "lose") {
         game.faceOffsLost = incrementStat(game.faceOffsLost, totalLostEl);
     }
-
     game.totalFaceOffs = incrementStat(game.totalFaceOffs, totalFaceoffsEl);
     calcWinPercent(game.faceOffsWon, game.totalFaceOffs);
     saveGame();
