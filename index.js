@@ -29,15 +29,22 @@ const defaultGame = {
 let game
 try {
     const ls = localStorage.getItem("game")
-        game = ls ? JSON.parse(ls) : { ...defaultGame }
-        if (!ls) window.location.href = "newgame.html";
-    }   catch (error) {
-        console.error("Error loading game from local storage:", error);
-        game = { ...defaultGame };
+    game = ls ? JSON.parse(ls) : { ...defaultGame }
+    if (!ls) window.location.href = "newgame.html";
+} catch (error) {
+    console.error("Error loading game from local storage:", error);
+    game = { ...defaultGame };
 }
 
+// Load Domo credentials from Local Storage
 let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret from local storage
 
+// Load undo stack from Local Storage
+const undoStack = localStorage.getItem("undoStack") ? JSON.parse(localStorage.getItem("undoStack")) : []
+if (!undoStack) {
+    undoButton.disabled = true
+    undoButton.classList.add("buttonDisabled")
+}
 
 /********************************************  Event Listeners  *************************************************/
 
@@ -48,17 +55,25 @@ function setupEventListeners() {
     elements.goalButton.addEventListener("click", () => handleStatUpdate("goals", elements.totalGoals));
 
     // New Game and Save buttons with confirmation prompts
-    elements.newGameButton.addEventListener("click", function() {
+    elements.newGameButton.addEventListener("click", function () {
         if (confirm("Are you sure? This will delete the current game")) {
             startNewGame()
         }
     })
 
-    elements.saveButton.addEventListener("click", function() {
+    elements.saveButton.addEventListener("click", function () {
         if (confirm("Are you sure? This will save the current game")) {
             writeDataToDomo(game)
         }
     })
+
+    
+    // Undo button (disabled by default)
+    if (elements.undoButton) {
+        // elements.undoButton.disabled = true
+        // elements.undoButton.classList.add("buttonDisabled")
+        elements.undoButton.addEventListener('click', undoLastAction)
+    }
 }
 
 /********************************************* Halper Functions ***********************************************/
@@ -67,7 +82,7 @@ function setupEventListeners() {
 function getElements(ids) {
     const result = {}
     ids.forEach(id => {
-        result[id] = document.getElementById(`${id}-el`) 
+        result[id] = document.getElementById(`${id}-el`)
     })
     return result
 }
@@ -101,7 +116,7 @@ function incrementStat(stat, element) {
 
 // Calculate and update win percentage
 function calcWinPercent(win, total) {
-    game.winPercent = win/total
+    game.winPercent = win / total
     elements.winPercent.textContent = formatPercentage(game.winPercent)
     // flash the win percent to draw attention when it changes
     triggerFlash(elements.winPercent)
@@ -109,7 +124,7 @@ function calcWinPercent(win, total) {
 
 function formatPercentage(num) {
     return (num * 100).toFixed(2) + '%';
-  }
+}
 
 // Add animation helper utilities
 function triggerPulse(el) {
@@ -123,6 +138,31 @@ function triggerPulse(el) {
         el.classList.remove('pulse')
         el.removeEventListener('animationend', handler)
     })
+}
+
+// Undo stack: store snapshots of previous game states (deep cloned)
+
+function pushSnapshot() {
+    undoStack.push(JSON.parse(JSON.stringify(game)))  // store a deep copy
+    localStorage.setItem("undoStack", JSON.stringify(undoStack)) // Persist undo stack to Local Storage
+    if (undoStack.length > 40) undoStack.shift() // cap stack size
+    if (elements.undoButton) {
+        elements.undoButton.disabled = false
+        elements.undoButton.classList.remove("buttonDisabled")
+    }
+}
+
+function undoLastAction() {
+    if (!undoStack.length) return
+    const prev = undoStack.pop()
+    localStorage.setItem("undoStack", JSON.stringify(undoStack)) // Persist undo stack to Local Storage
+    game = prev
+    renderPage()
+    saveGame()
+    if (!undoStack.length && elements.undoButton) {
+        elements.undoButton.disabled = true
+        elements.undoButton.classList.add("buttonDisabled")
+    }
 }
 
 // Flash animation to draw attention to an element that updates
@@ -143,7 +183,8 @@ function triggerFlash(el) {
 // Start a new game
 
 function startNewGame() {
-    localStorage.removeItem("game")
+    localStorage.removeItem("game") // Clear current game
+    localStorage.removeItem("undoStack") // Clear undo stack on new game
     window.location.href = "newgame.html"
 }
 
@@ -159,35 +200,35 @@ function saveGame() {
     the token on each call */
 
 async function writeDataToDomo(game) {
-const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?updateMethod=APPEND`;
+    const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?updateMethod=APPEND`;
 
     /**************** Helper functions (writeDataToDomo scope) ******************/
 
     // Get an access token from Domo
     async function getAccessToken() {
         const url = DOMO_API.TOKEN_URL,
-        clientId = creds.id,
-        clientSecret = creds.secret,
-        authorizationValue = 'Basic ' + btoa( clientId + ':' + clientSecret ),
+            clientId = creds.id,
+            clientSecret = creds.secret,
+            authorizationValue = 'Basic ' + btoa(clientId + ':' + clientSecret),
 
-        options = {
-        method: 'GET',
-        headers: {
-            Accept: 'application/json',
-            Authorization: authorizationValue,
-            grant_type: 'data',
-            }
-        };
+            options = {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: authorizationValue,
+                    grant_type: 'data',
+                }
+            };
 
         const response = await fetch(url, options),
-                data = await response.json()
+            data = await response.json()
 
         if (response.ok) {
             return data.access_token
-            } else {
-                alert(`Error retrieving access token: ${data.error}`)
-                throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
-            }
+        } else {
+            alert(`Error retrieving access token: ${data.error}`)
+            throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
+        }
     }
 
     // Toggle the save button between enabled and disabled states with appropriate text during API call 
@@ -200,7 +241,7 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
             elements.saveButton.classList.remove("buttonDisabled")  // Set button to full opacity after saving
         }
         elements.saveButton.textContent = text
-    }         
+    }
 
     /**************** Obtain Token and write data *******************************/
 
@@ -209,10 +250,10 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
     // Call function for Access Token, notify and halt if unable
     try {
         authorizationValue = 'Bearer ' + await getAccessToken()
-        } catch (error) {
-            console.log(error.message)
-            alert("The game was not saved becuase I'm unable to authenticate to Domo")
-            return
+    } catch (error) {
+        console.log(error.message)
+        alert("The game was not saved becuase I'm unable to authenticate to Domo")
+        return
     }
 
     let gameArray = []
@@ -221,7 +262,7 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
     }
 
     const gameString = gameArray.join(","),
-            options = {
+        options = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'text/csv',
@@ -229,11 +270,11 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
                 Authorization: authorizationValue,
             },
             body: gameString
-    }
+        }
 
     try {
         toggleSaveButton("disable", "Saving...")  // Change button text to indicate saving and disable it
-        const response = await fetch(url, options)  
+        const response = await fetch(url, options)
         if (response.ok) {
             alert("Game saved successfully!")
             toggleSaveButton("enable", "Save Game")  // Re-enable the save button and reset text
@@ -241,12 +282,12 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
         } else {
             const data = await response.json()
             alert((`${data.message} Status: ${data.status}, ${data.statusReason}`))
-            throw new Error (`${data.message} Status: ${data.status}, ${data.statusReason}`)
+            throw new Error(`${data.message} Status: ${data.status}, ${data.statusReason}`)
         }
-        } catch (error) {
-            toggleSaveButton("enable", "Save Game")  // Re-enable the save button and reset text
-            console.error(error.message)
-        }
+    } catch (error) {
+        toggleSaveButton("enable", "Save Game")  // Re-enable the save button and reset text
+        console.error(error.message)
+    }
 }
 
 // Initialize the UI
@@ -260,7 +301,7 @@ function renderPage() {
     elements.totalGoals.textContent = game.goals
 }
 
-function initializeApp() { 
+function initializeApp() {
     setupEventListeners()
     renderPage() // Draw the UI
 }
