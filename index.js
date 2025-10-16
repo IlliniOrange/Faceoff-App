@@ -7,11 +7,11 @@ const DOMO_API = {
 
 /********************************************  Initialize Variables  *************************************************/
 const elements = getElements([
-    "totalWon", "totalLost", "winButton", "loseButton", "newGameButton", "totalFaceoffs", "winPercent", "opponent", "saveButton",
+    "totalWon", "totalLost", "winButton", "loseButton", "newGameButton", "totalFaceoffs", "winPercent", "opponent", "saveButton", "undoButton",
     "totalGBs", "totalGoals", "goalButton", "gbWonButton", "gbLoseButton", "gridHeader"
 ])
 
-// Default game structure
+// Default game object structure
 const defaultGame = {
     date: new Date().toISOString(),
     location: "",
@@ -45,6 +45,33 @@ if (!undoStack) {
     undoButton.disabled = true
     undoButton.classList.add("buttonDisabled")
 }
+// Undo stack: store snapshots of previous game states (deep cloned)
+const undoStack = []
+function pushSnapshot() {
+    // store a deep copy
+    undoStack.push(JSON.parse(JSON.stringify(game)))
+    console.log(undoStack)
+    console.log(game)
+    // cap stack size
+    if (undoStack.length > 40) undoStack.shift()
+    if (elements.undoButton) { 
+        elements.undoButton.disabled = false
+        elements.undoButton.classList.remove("buttonDisabled")
+    }
+}
+
+function undoLastAction() {
+    if (!undoStack.length) return
+    const prev = undoStack.pop()
+    game = prev
+    renderPage()
+    saveGame()
+    if (!undoStack.length && elements.undoButton) {
+        elements.undoButton.disabled = true
+        elements.undoButton.classList.add("buttonDisabled")
+    }
+}
+
 
 /********************************************  Event Listeners  *************************************************/
 
@@ -66,12 +93,11 @@ function setupEventListeners() {
             writeDataToDomo(game)
         }
     })
-
     
     // Undo button (disabled by default)
     if (elements.undoButton) {
-        // elements.undoButton.disabled = true
-        // elements.undoButton.classList.add("buttonDisabled")
+        elements.undoButton.disabled = true
+        elements.undoButton.classList.add("buttonDisabled")
         elements.undoButton.addEventListener('click', undoLastAction)
     }
 }
@@ -89,11 +115,15 @@ function getElements(ids) {
 
 // Handle a faceoff win or loss, incrementing the appropriate stats and updating the UI
 function handleFaceoff(type) {
+    // snapshot state so undo can restore it
+    pushSnapshot()
+
     if (type === "win") {
         game.faceOffsWon = incrementStat(game.faceOffsWon, elements.totalWon);
     } else if (type === "lose") {
         game.faceOffsLost = incrementStat(game.faceOffsLost, elements.totalLost);
     }
+
     game.totalFaceOffs = incrementStat(game.totalFaceOffs, elements.totalFaceoffs);
     calcWinPercent(game.faceOffsWon, game.totalFaceOffs);
     saveGame();
@@ -101,6 +131,7 @@ function handleFaceoff(type) {
 
 //  Handle updating a generic stat, incrementing the stat and updating the UI
 function handleStatUpdate(statKey, element) {
+    pushSnapshot()
     game[statKey] = incrementStat(game[statKey], element);
     saveGame();
 }
