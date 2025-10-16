@@ -39,39 +39,12 @@ try {
 // Load Domo credentials from Local Storage
 let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret from local storage
 
-// Load undo stack from Local Storage
+// Load undoStack from Local Storage
 const undoStack = localStorage.getItem("undoStack") ? JSON.parse(localStorage.getItem("undoStack")) : []
 if (!undoStack) {
     undoButton.disabled = true
     undoButton.classList.add("buttonDisabled")
 }
-// Undo stack: store snapshots of previous game states (deep cloned)
-const undoStack = []
-function pushSnapshot() {
-    // store a deep copy
-    undoStack.push(JSON.parse(JSON.stringify(game)))
-    console.log(undoStack)
-    console.log(game)
-    // cap stack size
-    if (undoStack.length > 40) undoStack.shift()
-    if (elements.undoButton) { 
-        elements.undoButton.disabled = false
-        elements.undoButton.classList.remove("buttonDisabled")
-    }
-}
-
-function undoLastAction() {
-    if (!undoStack.length) return
-    const prev = undoStack.pop()
-    game = prev
-    renderPage()
-    saveGame()
-    if (!undoStack.length && elements.undoButton) {
-        elements.undoButton.disabled = true
-        elements.undoButton.classList.add("buttonDisabled")
-    }
-}
-
 
 /********************************************  Event Listeners  *************************************************/
 
@@ -96,8 +69,8 @@ function setupEventListeners() {
     
     // Undo button (disabled by default)
     if (elements.undoButton) {
-        elements.undoButton.disabled = true
-        elements.undoButton.classList.add("buttonDisabled")
+        // elements.undoButton.disabled = true
+        // elements.undoButton.classList.add("buttonDisabled")
         elements.undoButton.addEventListener('click', undoLastAction)
     }
 }
@@ -114,10 +87,8 @@ function getElements(ids) {
 }
 
 // Handle a faceoff win or loss, incrementing the appropriate stats and updating the UI
-function handleFaceoff(type) {
-    // snapshot state so undo can restore it
-    pushSnapshot()
-
+function handleFaceoff(type) { 
+    pushSnapshot() // snapshot state so undo can restore it
     if (type === "win") {
         game.faceOffsWon = incrementStat(game.faceOffsWon, elements.totalWon);
     } else if (type === "lose") {
@@ -172,7 +143,6 @@ function triggerPulse(el) {
 }
 
 // Undo stack: store snapshots of previous game states (deep cloned)
-
 function pushSnapshot() {
     undoStack.push(JSON.parse(JSON.stringify(game)))  // store a deep copy
     localStorage.setItem("undoStack", JSON.stringify(undoStack)) // Persist undo stack to Local Storage
