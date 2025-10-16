@@ -2,27 +2,16 @@
 
 const DOMO_API = {
     TOKEN_URL: 'https://api.domo.com/oauth/token?grant_type=client_credentials',
-    DATASET_ID: '497a5fdd-17a6-4ec7-b0d2-1298446c55a0-1',
+    DATASET_ID: '497a5fdd-17a6-4ec7-b0d2-1298446c55a0',
 }
 
 /********************************************  Initialize Variables  *************************************************/
+const elements = getElements([
+    "totalWon", "totalLost", "winButton", "loseButton", "newGameButton", "totalFaceoffs", "winPercent", "opponent", "saveButton",
+    "totalGBs", "totalGoals", "goalButton", "gbWonButton", "gbLoseButton", "gridHeader"
+])
 
-const totalWonEl = getEl("totalWon-el"),
-    totalLostEl = getEl("totalLost-el"),
-    winButtonEl = getEl("winButton-el"),
-    loseButtonEl = getEl("loseButton-el"),
-    newGameButtonEl = getEl("newGameButton-el"),
-    totalFaceoffsEl = getEl("totalFaceoffs-el"),
-    winPercentEl = getEl("winPercent-el"),
-    opponentEl = getEl("opponent-el"),
-    saveButtonEl = getEl("saveButton-el"),
-    totalGBsEl = getEl("totalGBs-el"),
-    totalGoalsEl = getEl("totalGoals-el"),
-    goalButtonEl = getEl("goalButton-el"),
-    gbWonButtonEl = getEl("gbWonButton-el"),
-    gbLoseButtonEl = getEl("gbLoseButton-el"),
-    gridHeaderEl = getEl("gridHeader-el")
-
+// Default game structure
 const defaultGame = {
     date: new Date().toISOString(),
     location: "",
@@ -53,19 +42,19 @@ let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret
 /********************************************  Event Listeners  *************************************************/
 
 function setupEventListeners() {
-    winButtonEl.addEventListener("click", () => handleFaceoff("win"));
-    loseButtonEl.addEventListener("click", () => handleFaceoff("lose"));
-    gbWonButtonEl.addEventListener("click", () => handleStatUpdate("gbsWon", totalGBsEl));
-    goalButtonEl.addEventListener("click", () => handleStatUpdate("goals", totalGoalsEl));
+    elements.winButton.addEventListener("click", () => handleFaceoff("win"));
+    elements.loseButton.addEventListener("click", () => handleFaceoff("lose"));
+    elements.gbWonButton.addEventListener("click", () => handleStatUpdate("gbsWon", elements.totalGBs));
+    elements.goalButton.addEventListener("click", () => handleStatUpdate("goals", elements.totalGoals));
 
     // New Game and Save buttons with confirmation prompts
-    newGameButtonEl.addEventListener("click", function() {
+    elements.newGameButton.addEventListener("click", function() {
         if (confirm("Are you sure? This will delete the current game")) {
             startNewGame()
         }
     })
 
-    saveButtonEl.addEventListener("click", function() {
+    elements.saveButton.addEventListener("click", function() {
         if (confirm("Are you sure? This will save the current game")) {
             writeDataToDomo(game)
         }
@@ -74,19 +63,23 @@ function setupEventListeners() {
 
 /********************************************* Halper Functions ***********************************************/
 
-// Get element by ID
-function getEl(id) {
-    return document.getElementById(id);
+// Get element IDs for a list of elements
+function getElements(ids) {
+    const result = {}
+    ids.forEach(id => {
+        result[id] = document.getElementById(`${id}-el`) 
+    })
+    return result
 }
 
 // Handle a faceoff win or loss, incrementing the appropriate stats and updating the UI
 function handleFaceoff(type) {
     if (type === "win") {
-        game.faceOffsWon = incrementStat(game.faceOffsWon, totalWonEl);
+        game.faceOffsWon = incrementStat(game.faceOffsWon, elements.totalWon);
     } else if (type === "lose") {
-        game.faceOffsLost = incrementStat(game.faceOffsLost, totalLostEl);
+        game.faceOffsLost = incrementStat(game.faceOffsLost, elements.totalLost);
     }
-    game.totalFaceOffs = incrementStat(game.totalFaceOffs, totalFaceoffsEl);
+    game.totalFaceOffs = incrementStat(game.totalFaceOffs, elements.totalFaceoffs);
     calcWinPercent(game.faceOffsWon, game.totalFaceOffs);
     saveGame();
 }
@@ -109,9 +102,9 @@ function incrementStat(stat, element) {
 // Calculate and update win percentage
 function calcWinPercent(win, total) {
     game.winPercent = win/total
-    winPercentEl.textContent = formatPercentage(game.winPercent)
+    elements.winPercent.textContent = formatPercentage(game.winPercent)
     // flash the win percent to draw attention when it changes
-    triggerFlash(winPercentEl)
+    triggerFlash(elements.winPercent)
 }
 
 function formatPercentage(num) {
@@ -157,8 +150,8 @@ function startNewGame() {
 // Save game to Local Storage
 function saveGame() {
     localStorage.setItem("game", JSON.stringify(game))
-    saveButtonEl.classList.remove("buttonDisabled")  // Enable the save button after an event
-    saveButtonEl.disabled = false
+    elements.saveButton.classList.remove("buttonDisabled")  // Enable the save button after an event
+    elements.saveButton.disabled = false
 }
 
 /* This section contains the functions used to write the data to Domo through OAuth API
@@ -200,13 +193,13 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
     // Toggle the save button between enabled and disabled states with appropriate text during API call 
     function toggleSaveButton(state, text) {
         if (state === "disable") {
-            saveButtonEl.disabled = true // Disable the save button during API call
-            saveButtonEl.classList.add("buttonDisabled")  // Set button opacity to disabled view
+            elements.saveButton.disabled = true // Disable the save button during API call
+            elements.saveButton.classList.add("buttonDisabled")  // Set button opacity to disabled view
         } else {
-            saveButtonEl.disabled = false // Re-enable the save button
-            saveButtonEl.classList.remove("buttonDisabled")  // Set button to full opacity after saving
+            elements.saveButton.disabled = false // Re-enable the save button
+            elements.saveButton.classList.remove("buttonDisabled")  // Set button to full opacity after saving
         }
-        saveButtonEl.textContent = text
+        elements.saveButton.textContent = text
     }         
 
     /**************** Obtain Token and write data *******************************/
@@ -258,13 +251,13 @@ const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?update
 
 // Initialize the UI
 function renderPage() {
-    gridHeaderEl.textContent = "Vs: " + game.opponent
-    totalWonEl.textContent = game.faceOffsWon
-    totalLostEl.textContent = game.faceOffsLost
-    totalFaceoffsEl.textContent = game.totalFaceOffs
-    winPercentEl.textContent = formatPercentage(game.winPercent)
-    totalGBsEl.textContent = game.gbsWon
-    totalGoalsEl.textContent = game.goals
+    elements.gridHeader.textContent = "Vs: " + game.opponent
+    elements.totalWon.textContent = game.faceOffsWon
+    elements.totalLost.textContent = game.faceOffsLost
+    elements.totalFaceoffs.textContent = game.totalFaceOffs
+    elements.winPercent.textContent = formatPercentage(game.winPercent)
+    elements.totalGBs.textContent = game.gbsWon
+    elements.totalGoals.textContent = game.goals
 }
 
 function initializeApp() { 
