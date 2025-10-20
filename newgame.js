@@ -54,7 +54,6 @@ function checkForExistingGame() {
     if (existingGame) { 
         if (confirm("A game is already in progress. Starting a new game will overwrite the existing game. Press OK to continue, or Cancel to go to the current game.")) {
             startNewGame()
-            // return
         } else {
             window.location.href = "index.html"
         }

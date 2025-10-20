@@ -336,7 +336,7 @@ function renderPage() {
 
 function initializeApp() {
     setupEventListeners()
-    renderPage() // Draw the UI
+    renderPage()
     checkForDomoCreds()
 }
 
