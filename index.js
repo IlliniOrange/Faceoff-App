@@ -67,10 +67,8 @@ function setupEventListeners() {
     })
     
     // Undo button (disabled by default)
-    if (elements.undoButton) {
-        // changeButtonState(elements.undoButton, "disable")
-        elements.undoButton.addEventListener('click', undoLastAction)
-    }
+    elements.undoButton.addEventListener('click', undoLastAction)
+
 }
 
 /********************************************* Halper Functions ***********************************************/
