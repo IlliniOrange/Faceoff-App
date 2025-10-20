@@ -8,7 +8,7 @@ const DOMO_API = {
 /********************************************  Initialize Variables  *************************************************/
 const elements = getElements([
     "totalWon", "totalLost", "winButton", "loseButton", "newGameButton", "totalFaceoffs", "winPercent", "opponent", "saveButton", "undoButton",
-    "totalGBs", "totalGoals", "goalButton", "gbWonButton", "gbLoseButton", "gridHeader"
+    "totalGBs", "totalGoals", "goalButton", "gbWonButton", "gbLoseButton", "gridHeader", "errorHeader", "gridContainer"
 ])
 
 // Default game object structure
@@ -36,12 +36,9 @@ try {
     game = { ...defaultGame };
 }
 
-// Load Domo credentials from Local Storage
-let creds = JSON.parse(localStorage.getItem("Domo")) // Get client ID and secret from local storage
-
 // Load undoStack from Local Storage
 const undoStack = localStorage.getItem("undoStack") ? JSON.parse(localStorage.getItem("undoStack")) : []
-if (!undoStack) {
+if (!undoStack || !undoStack.length) {
     changeButtonState(elements.undoButton, "disable")
 }
 
@@ -146,27 +143,50 @@ function undoLastAction() {
 }
 
 function changeButtonState(element, state, text) {
-        if (state === "disable") {
-            element.disabled = true // Disable the save button during API call
-            element.classList.add("buttonDisabled")  // Set button opacity to disabled view
-        } else {
-            element.disabled = false // Re-enable the save button
-            element.classList.remove("buttonDisabled")  // Set button to full opacity after saving
-        }
-        if (text) {
-            element.textContent = text
-        }
+    if (state === "disable") {
+        element.disabled = true // Disable the save button during API call
+        element.classList.add("buttonDisabled")  // Set button opacity to disabled view
+    } else {
+        element.disabled = false // Re-enable the save button
+        element.classList.remove("buttonDisabled")  // Set button to full opacity after saving
     }
+    if (text) {
+        element.textContent = text
+    }
+}
+
+// Display error message at the top of the
+function showError(message) {
+  const grid = document.getElementById('gridContainer-el');
+
+  // Check if the error element already exists
+  let errorEl = document.getElementById('errorHeader-el');
+  if (!errorEl) {
+    errorEl = document.createElement('div');
+    errorEl.className = 'errorHeader';
+    errorEl.id = 'errorHeader-el';
+    errorEl.style.gridColumn = '1 / span 2'; // Ensure it spans both columns
+    grid.insertBefore(errorEl, grid.children[1]); // Insert after the gridHeader
+  }
+
+  errorEl.textContent = message;
+}
+
+// Function to hide/remove the error message
+function hideError() {
+  const errorEl = document.getElementById('errorHeader-el');
+  if (errorEl) {
+    errorEl.remove();
+  }
+}
 
 // Add animation helper utilities
 function triggerPulse(el) {
     if (!el) return
     el.classList.remove('pulse')
-    // force reflow to restart animation
-    void el.offsetWidth
+    void el.offsetWidth 
     el.classList.add('pulse')
-    // clean up after animation completes
-    el.addEventListener('animationend', function handler() {
+    el.addEventListener('animationend', function handler() { // clean up after animation completes
         el.classList.remove('pulse')
         el.removeEventListener('animationend', handler)
     })
@@ -187,8 +207,30 @@ function triggerFlash(el) {
 
 /*****************************************  FUNCTIONS  ********************************************/
 
-// Start a new game
+// Confirms if Domo creds exist in Local Storage, if not notifiy and disable save button
+function checkForDomoCreds() {
+    let creds = JSON.parse(localStorage.getItem("Domo"))
+    if (!creds || !creds.id || !creds.secret) {
+        showError("Domo credentials not found; Unable to save games")
+        alert("Domo credentials not found. You will be unable to save games")
+        changeButtonState(elements.saveButton, "disable")
+        return false
+    } else {
+        hideError()
+        return true
+        }
+}
 
+function getDomoCreds() {
+    if (checkForDomoCreds()) {
+        return JSON.parse(localStorage.getItem("Domo"))
+    }
+    else {
+        return null
+    }
+}
+
+// Start a new game
 function startNewGame() {
     localStorage.removeItem("game") // Clear current game
     localStorage.removeItem("undoStack") // Clear undo stack on new game
@@ -201,17 +243,11 @@ function saveGame() {
     changeButtonState(elements.saveButton, "enable")  // Re-enable the save button and reset text
 }
 
-/* This section contains the functions used to write the data to Domo through OAuth API
-    - For now, not expecting to save data in less than 1 hour intervals, the code will refresh
-    the token on each call */
+// Get an access token from Domo
 
-async function writeDataToDomo(game) {
-    const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?updateMethod=APPEND`;
-
-    /**************** Helper functions (writeDataToDomo scope) ******************/
-
-    // Get an access token from Domo
-    async function getAccessToken() {
+async function getAccessToken() {
+    let creds = getDomoCreds()
+    if (creds) {
         const url = DOMO_API.TOKEN_URL,
             clientId = creds.id,
             clientSecret = creds.secret,
@@ -224,20 +260,23 @@ async function writeDataToDomo(game) {
                     Authorization: authorizationValue,
                     grant_type: 'data',
                 }
-            };
-
+            }
         const response = await fetch(url, options),
             data = await response.json()
-
         if (response.ok) {
             return data.access_token
         } else {
-            alert(`Error retrieving access token: ${data.error}`)
+            // alert(`Error retrieving access token: ${data.error}`)
             throw new Error(`Unable to retrieve access token: ${data.error}, status ${response.status} at ${response.url}`)
+            return data.error
         }
+    } else {
+        throw new Error("Domo credentials not found in local storage")
     }
+}
 
-    /**************** Obtain Token and write data *******************************/
+async function writeDataToDomo(game) {
+    const url = `https://api.domo.com/v1/datasets/${DOMO_API.DATASET_ID}/data?updateMethod=APPEND`;
 
     let authorizationValue = ''
 
@@ -298,6 +337,7 @@ function renderPage() {
 function initializeApp() {
     setupEventListeners()
     renderPage() // Draw the UI
+    checkForDomoCreds()
 }
 
-initializeApp() // Draw the UI
+initializeApp()
