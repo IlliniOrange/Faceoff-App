@@ -10,32 +10,7 @@ let creds = {
     secret: "",
 }
 
-/****************** Helper Functions *********************/
-
-// Add event listener to element for specified event type that calls checkInput. checkInput enables the start button if all fields are filled in.
-function addGenericListener(eventType, element) {
-    element.addEventListener(eventType, () => checkInput())
-}
-
-// Format the current date and time as MM/DD/YYYY HH:MM:SS
-function formatDate() {
-    var d = new Date(),
-        month = '' + (d.getUTCMonth() + 1),
-        day = '' + d.getUTCDate(),
-        year = d.getUTCFullYear(),
-        hour = d.getUTCHours(),
-        min = d.getUTCMinutes(),
-        sec = d.getUTCSeconds()
-    
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-
-    return [month, day, year].join('/') + " " + [hour, min, sec].join(':')
-}
-
-/****************** Event Listeners *********************/
+/********************************************  Event Listeners  *************************************************/
 
 addGenericListener("keyup", opponentInputEl)
 addGenericListener("keyup", locationEl)
@@ -72,6 +47,48 @@ startButton.addEventListener("click", function() {
     window.location.href = "index.html"
 })
 
+/********************************************* Halper Functions ***********************************************/
+
+function checkForExistingGame() {
+    let existingGame = localStorage.getItem("game")
+    if (existingGame) { 
+        if (confirm("A game is already in progress. Starting a new game will overwrite the existing game. Press OK to continue, or Cancel to go to the current game.")) {
+            startNewGame()
+            // return
+        } else {
+            window.location.href = "index.html"
+        }
+    }
+}
+
+// Add event listener to element for specified event type that calls checkInput. checkInput enables the start button if all fields are filled in.
+function addGenericListener(eventType, element) {
+    element.addEventListener(eventType, () => checkInput())
+}
+
+function startNewGame() {
+    localStorage.removeItem("game") // Clear current game
+    localStorage.removeItem("undoStack") // Clear undo stack on new game
+}
+
+// Format the current date and time as MM/DD/YYYY HH:MM:SS
+function formatDate() {
+    var d = new Date(),
+        month = '' + (d.getUTCMonth() + 1),
+        day = '' + d.getUTCDate(),
+        year = d.getUTCFullYear(),
+        hour = d.getUTCHours(),
+        min = d.getUTCMinutes(),
+        sec = d.getUTCSeconds()
+    
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [month, day, year].join('/') + " " + [hour, min, sec].join(':')
+}
+
 function checkInput() {
     if (opponentInputEl.value !== '' && locationEl.value !== '' && domoClientIdEl.value !== '' && domoClientSecretEl.value !== '' && gameTypeEl.value !== '') {
         startButton.classList.remove("buttonDisabled")
@@ -79,6 +96,14 @@ function checkInput() {
     } else {
         startButton.classList.add("buttonDisabled")
         startButton.disabled = true
+    }
+}
+
+function removeParentGridCell(el) {
+    if (!el) return
+    let parent = el.closest('.gridHeader') || el.parentElement
+    if (parent && parent.parentElement) {
+            parent.parentElement.removeChild(parent)
     }
 }
 
@@ -90,13 +115,14 @@ function checkForDomoCreds() {
         creds = JSON.parse(ls)
         domoClientIdEl.value = creds.id
         domoClientSecretEl.value = creds.secret
-        domoClientIdEl.style.display = "none"
-        domoClientSecretEl.style.display = "none"
+        removeParentGridCell(domoClientIdEl)
+        removeParentGridCell(domoClientSecretEl)
         }
 
 }
 
 function initializeApp() {
+    checkForExistingGame()
     checkForDomoCreds()
 }
 
