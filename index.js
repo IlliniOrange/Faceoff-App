@@ -2,7 +2,7 @@
 
 const DOMO_API = {
     TOKEN_URL: 'https://api.domo.com/oauth/token?grant_type=client_credentials',
-    DATASET_ID: '497a5fdd-17a6-4ec7-b0d2-1298446c55a0-1',
+    DATASET_ID: '497a5fdd-17a6-4ec7-b0d2-1298446c55a0',
 }
 
 /********************************************  Initialize Variables  *************************************************/
