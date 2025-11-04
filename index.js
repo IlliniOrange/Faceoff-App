@@ -137,7 +137,7 @@ function undoLastAction() {
     game = prev
     renderPage()
     saveGame()
-    if (!undoStack.length && elements.undoButton) {
+    if (!undoStack.length && elements.undoButton) {  // Disable the button if undoStack is empty
         changeButtonState(elements.undoButton, "disable")
     }
 }
