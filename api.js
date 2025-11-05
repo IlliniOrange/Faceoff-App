@@ -21,7 +21,6 @@ async function getAuthorizationHeader() {
         const token = await getAccessToken()
         return `Bearer ${token}`
 }
-import { DOMO_API_CONFIG } from './config.js'
 
 /**
  * Retrieves Domo credentials from localStorage and validates them.
