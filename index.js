@@ -1,5 +1,5 @@
 /********************************************  Constants  ************************************************************/
-import { DOMO_API, writeDataToDomo, getAccessToken, getDomoCreds, checkForDomoCreds } from "./api.js";
+import {  writeDataToDomo, getDomoCreds } from "./api.js";
 
 /********************************************  Initialize Variables  *************************************************/
 const elements = getElements([
@@ -53,18 +53,30 @@ function setupEventListeners() {
         }
     })
 
-    elements.saveButton.addEventListener("click", function () {
-        if (confirm("Are you sure? This will save the current game")) {
-            writeDataToDomo(game)
-        }
+    elements.saveButton.addEventListener("click", async function () {
+        if (!confirm("Are you sure? This will save the current game"))
+            return
+            
+            changeButtonState(elements.saveButton, "disable", "Saving...")
+            try {
+                if (await writeDataToDomo(game)) {
+                    alert("Game saved successfully")
+                    startNewGame()
+                }
+            } catch (error) {
+                alert(error)
+
+            } finally {
+                changeButtonState(elements.saveButton, "enable", "Save Game")
+            }
+        
     })
-    
+
     // Undo button (disabled by default)
     elements.undoButton.addEventListener('click', undoLastAction)
-
 }
 
-/********************************************* Halper Functions ***********************************************/
+/********************************************* Helper Functions ***********************************************/
 
 // Get element IDs for a list of elements
 function getElements(ids) {
@@ -203,11 +215,6 @@ function triggerFlash(el) {
 
 /*****************************************  FUNCTIONS  ********************************************/
 
-// Confirms if Domo creds exist in Local Storage, if not notifiy and disable save button
-
-
-
-
 // Start a new game
 function startNewGame() {
     localStorage.removeItem("game") // Clear current game
@@ -234,10 +241,21 @@ function renderPage() {
     elements.totalGoals.textContent = game.goals
 }
 
-function initializeApp() {
+async function initializeApp() {
     setupEventListeners()
     renderPage()
-    checkForDomoCreds()
+    if (await getDomoCreds()) {
+        hideError()
+    } else {
+        changeButtonState(elements.saveButton, "disable")
+        console.log("error")
+        showError("Domo creds not found; unable to save games")
+    }
 }
 
 initializeApp()
+
+
+
+
+
